@@ -58,7 +58,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/encode", "/register").permitAll()
-                        .requestMatchers("/airport/**", "/flight/**", "/reservation/**","/details/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/airport/**", "/flight/**", "/reservation/**","/details/**","/payment").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
