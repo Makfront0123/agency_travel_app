@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import in.armando.travel_agency_back.entity.UserEntity;
 import in.armando.travel_agency_back.io.AuthRequest;
 import in.armando.travel_agency_back.io.AuthResponse;
 import in.armando.travel_agency_back.service.UserService;
@@ -34,12 +35,17 @@ public class AuthControlller {
     @PostMapping("/login")
     public AuthResponse login(@RequestBody AuthRequest request) throws Exception {
         authenticate(request.getEmail(), request.getPassword());
+
+        final UserEntity user = userService.getUserByEmail(request.getEmail());
+        if (!user.isVerified()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not verified");
+        }
         final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
-        
+
         final String token = jwtUtil.generateToken(userDetails);
         String role = userService.getUserRole(request.getEmail());
         return new AuthResponse(
-                request.getEmail(),role,token);
+                request.getEmail(), role, token);
     }
 
     private void authenticate(String email, String password) throws Exception {
@@ -53,7 +59,6 @@ public class AuthControlller {
         }
     }
 
-    
     @PostMapping("/encode")
     public String encodePassword(@RequestBody Map<String, String> request) {
         return passwordEncoder.encode(request.get("password"));

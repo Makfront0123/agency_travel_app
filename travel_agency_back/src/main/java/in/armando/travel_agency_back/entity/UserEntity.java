@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import java.sql.Timestamp;
+ 
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user")
@@ -28,9 +28,18 @@ public class UserEntity {
     private String email;
     private String password;
     private String role;
+    private boolean verified;
     @CreationTimestamp
     @Column(updatable = false)
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
     @UpdateTimestamp
-    private Timestamp updatedAt;
+    @Column(updatable = false)
+    private LocalDateTime updatedAt;
+
+    @Column(nullable = true)
+    private LocalDateTime otpExpiration;  // Fecha de expiración del OTP
+    
+    @Column(nullable = true)
+    private String otp; 
+ 
 }

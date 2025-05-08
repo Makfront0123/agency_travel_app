@@ -1,6 +1,8 @@
 package in.armando.travel_agency_back.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -10,7 +12,9 @@ import org.springframework.stereotype.Service;
 import in.armando.travel_agency_back.entity.UserEntity;
 import in.armando.travel_agency_back.io.UserRequest;
 import in.armando.travel_agency_back.io.UserResponse;
+
 import in.armando.travel_agency_back.repository.UserRepository;
+import in.armando.travel_agency_back.service.EmailService;
 import in.armando.travel_agency_back.service.UserService;
 import lombok.RequiredArgsConstructor;
 
@@ -20,11 +24,33 @@ public class UserServiceImpl implements UserService {
     private final UserRepository repository;
     final PasswordEncoder passwordEncoder;
 
+    final EmailService emailService;
+
     @Override
     public UserResponse register(UserRequest request) {
         UserEntity newUser = convertToEntity(request);
-        newUser = repository.save(newUser);
-        return convertToResponse(newUser);
+
+        String message;
+
+        if (!request.getRole().equalsIgnoreCase("ROLE_ADMIN")) {
+            newUser.setVerified(false);
+
+            String otp = String.format("%06d", new Random().nextInt(999999));
+            newUser.setOtp(otp);
+
+            newUser.setOtpExpiration(LocalDateTime.now().plusMinutes(10));
+
+            emailService.sendOtp(newUser.getEmail(), otp);
+
+            message = "Usuario registrado correctamente. OTP enviado al correo.";
+        } else {
+            newUser.setVerified(true);
+            message = "Admin registrado correctamente.";
+        }
+
+        repository.save(newUser);
+
+        return convertToResponse(newUser );
     }
 
     private UserEntity convertToEntity(UserRequest request) {
@@ -39,13 +65,15 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    private UserResponse convertToResponse(UserEntity request) {
+    private UserResponse convertToResponse(UserEntity request  ) {
         return UserResponse.builder()
                 .userId(request.getUserId())
                 .name(request.getName())
                 .lastName(request.getLastName())
                 .email(request.getEmail())
                 .role(request.getRole())
+                .verified(request.isVerified())
+
                 .createdAt(request.getCreatedAt())
                 .updatedAt(request.getUpdatedAt())
                 .build();
@@ -62,7 +90,7 @@ public class UserServiceImpl implements UserService {
     public List<UserResponse> getAllUsers() {
         return repository.findAll()
                 .stream()
-                .map(userEntity -> convertToResponse(userEntity))
+                .map(userEntity -> convertToResponse(userEntity ))
                 .collect(Collectors.toList());
     }
 
@@ -72,4 +100,32 @@ public class UserServiceImpl implements UserService {
                 () -> new RuntimeException("User not found"));
         repository.delete(existingUser);
     }
+
+    @Override
+    public UserResponse verifyOtp(String email, String otp) {
+        UserEntity user = repository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (user.getOtp() == null || !user.getOtp().equals(otp)) {
+            throw new RuntimeException("Código OTP inválido o ya usado");
+        }
+
+        if (user.getOtpExpiration().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("El OTP ha expirado");
+        }
+
+        user.setVerified(true);
+        user.setOtp(null);
+        user.setOtpExpiration(null);
+        repository.save(user);
+
+        return convertToResponse(user );
+    }
+
+    @Override
+    public UserEntity getUserByEmail(String email) {
+         return repository.findByEmail(email).orElseThrow(
+                () -> new RuntimeException("User not found"));
+    }
+
 }
