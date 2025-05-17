@@ -18,17 +18,29 @@ public class PaymentController {
     @PostMapping("/payment")
     @ResponseStatus(HttpStatus.CREATED)
     public PaymentResponse addPayment(@RequestBody PaymentRequest entity) {
-        return service.add(entity);
+        try {
+            return service.add(entity);
+        } catch (Exception e) {
+            throw new Error(e);
+        }
     }
 
     @GetMapping("admin/payment")
     @ResponseStatus(HttpStatus.OK)
     public Iterable<PaymentResponse> getAllPayments() {
-        return service.getAllPayments();
+        try {
+            return service.getAllPayments();
+        } catch (Exception e) {
+            throw new Error(e);
+        }
     }
 
     @DeleteMapping("admin/payment/{id}")
     public void deletePayment(@PathVariable String id) {
-        service.delete(id);
+        try {
+            service.delete(id);
+        } catch (Exception e) {
+            throw new Error(e);
+        }
     }
 }

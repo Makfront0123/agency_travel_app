@@ -38,13 +38,14 @@ public class PassengerServiceImpl implements PassengerService {
     public void delete(String reservationId) {
         PassengerEntity passenger = passengerRepository.findByPassengerId(reservationId)
                 .orElseThrow(() -> new RuntimeException("Passenger not found"));
-        reservationRepository.deleteById(passenger.getReservation().getId());
+        passengerRepository.delete(passenger);
+
     }
 
     private PassengerEntity convertToEntity(PassengerResponse request) {
-        ReservationEntity reservation = reservationRepository
-                .findByReservationId(request.getReservation().getReservationId())
+        ReservationEntity reservation = reservationRepository.findById(request.getReservation().getId())
                 .orElseThrow(() -> new RuntimeException("Reservation not found"));
+
         return PassengerEntity.builder()
                 .passengerId(request.getPassengerId())
                 .reservation(reservation)

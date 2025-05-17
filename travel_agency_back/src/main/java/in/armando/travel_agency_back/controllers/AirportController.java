@@ -12,7 +12,7 @@ import in.armando.travel_agency_back.service.AirportService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
- 
+
 @RequiredArgsConstructor
 public class AirportController {
     private final AirportService service;
@@ -20,11 +20,20 @@ public class AirportController {
     @PostMapping("/admin/airport")
     @ResponseStatus(HttpStatus.CREATED)
     public AirportResponse addAirport(@RequestBody AirportRequest request) {
-        return service.add(request);
+        try {
+            return service.add(request);
+        } catch (Exception e) {
+            throw new Error(e);
+        }
     }
+
     @GetMapping("/airport")
     public List<AirportResponse> getAllAirports() {
-        return service.getAll();
+        try {
+            return service.getAll();
+        } catch (Exception e) {
+            throw new Error(e);
+        }
     }
 
     @DeleteMapping("/admin/airport/{airportId}")

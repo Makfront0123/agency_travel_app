@@ -60,18 +60,3 @@ public class FlightEntity {
     @Column(updatable = false)
     private LocalDateTime updatedAt;
 }
-
-/*
- * SELECT 
-    f.flight_id,
-    f.airline,
-    f.date_initial,
-    f.date_final,
-    ao.name AS origin_name,
-    ad.name AS destination_name
-FROM flight f
-JOIN airport ao ON f.origin_id = ao.id
-JOIN airport ad ON f.destination_id = ad.id;
-
- * 
- */

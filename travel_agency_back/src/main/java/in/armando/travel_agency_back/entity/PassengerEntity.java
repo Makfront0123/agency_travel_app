@@ -20,14 +20,15 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "passenger")
-@Builder
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class PassengerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String passengerId;
 
@@ -38,6 +39,7 @@ public class PassengerEntity {
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
+
     @UpdateTimestamp
     @Column(updatable = false)
     private LocalDateTime updatedAt;

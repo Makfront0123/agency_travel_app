@@ -13,5 +13,5 @@ public interface UserService {
     void delete(String userId);
     UserResponse verifyOtp(String email, String otp);
     UserEntity getUserByEmail(String email);
-    
+    UserResponse getUserById(String userId);
 }

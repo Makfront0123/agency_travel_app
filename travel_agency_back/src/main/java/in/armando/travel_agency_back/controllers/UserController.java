@@ -31,14 +31,28 @@ public class UserController {
         try {
             return userService.register(request);
         } catch (Exception e) {
-           throw new Error(e);
+            throw new Error(e);
         }
     }
 
     @GetMapping("/admin/users")
     @ResponseStatus(HttpStatus.OK)
     public List<UserResponse> getAllUsers() {
-        return userService.getAllUsers();
+        try {
+            return userService.getAllUsers();
+        } catch (Exception e) {
+            throw new Error(e);
+        }
+    }
+
+    @GetMapping("/users/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserResponse getUserById(@PathVariable String userId) {
+        try {
+            return userService.getUserById(userId);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
     }
 
     @DeleteMapping("/admin/users/{userId}")
@@ -53,6 +67,10 @@ public class UserController {
 
     @PostMapping("/verify")
     public ResponseEntity<UserResponse> verifyOtp(@RequestBody OtpRequest request) {
-        return ResponseEntity.ok(userService.verifyOtp(request.getEmail(), request.getOtp()));
+        try {
+            return ResponseEntity.ok(userService.verifyOtp(request.getEmail(), request.getOtp()));
+        } catch (Exception e) {
+            throw new Error(e);
+        }
     }
 }

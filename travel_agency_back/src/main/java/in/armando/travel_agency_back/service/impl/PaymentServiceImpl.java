@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import in.armando.travel_agency_back.entity.PaymentEntity;
-
 import in.armando.travel_agency_back.io.PaymentRequest;
 import in.armando.travel_agency_back.io.PaymentResponse;
 import in.armando.travel_agency_back.repository.PaymentRepository;
@@ -36,8 +35,9 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public PaymentResponse getPaymentById(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPaymentById'");
+        PaymentEntity existingPayment = paymentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Payment not found with id: " + id));
+        return convertToResponse(existingPayment);
     }
 
     @Override

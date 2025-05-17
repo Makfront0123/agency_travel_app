@@ -17,18 +17,30 @@ public class ReservationController {
     @PostMapping("/reservation")
     @ResponseStatus(HttpStatus.CREATED)
     public ReservationResponse addReservation(@RequestBody ReservationRequest entity) {
-        return service.add(entity);
+        try {
+            return service.add(entity);
+        } catch (Exception e) {
+            throw new Error(e);
+        }
     }
 
     @GetMapping("admin/reservation")
     @ResponseStatus(HttpStatus.OK)
     public Iterable<ReservationResponse> getAllReservations() {
-        return service.getAll();
+        try {
+            return service.getAll();
+        } catch (Exception e) {
+            throw new Error(e);
+        }
     }
 
     @DeleteMapping("admin/reservation/{id}")
     public void deleteReservation(@PathVariable String id) {
-        service.delete(id);
+        try {
+            service.delete(id);
+        } catch (Exception e) {
+            throw new Error(e);
+        }
     }
 
 }

@@ -17,17 +17,29 @@ public class DetailsReservationController {
     @PostMapping("/details")
     @ResponseStatus(HttpStatus.CREATED)
     public DetailsReservationResponse addDetails(@RequestBody DetailsReservationRequest entity) {
-        return service.add(entity);
+        try {
+            return service.add(entity);
+        } catch (Exception e) {
+            throw new Error(e);
+        }
     }
 
     @GetMapping("/details")
     public List<DetailsReservationResponse> getAllDetails() {
-        return service.getAll();
+        try {
+            return service.getAll();
+        } catch (Exception e) {
+            throw new Error(e);
+        }
     }
 
     @DeleteMapping("/details/{reservationId}")
     public void deleteDetails(@PathVariable String reservationId) {
-        service.delete(reservationId);
+        try {
+            service.delete(reservationId);
+        } catch (Exception e) {
+            throw new Error(e);
+        }
     }
 
 }

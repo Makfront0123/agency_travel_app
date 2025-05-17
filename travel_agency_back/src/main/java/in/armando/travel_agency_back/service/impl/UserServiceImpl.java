@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import in.armando.travel_agency_back.entity.UserEntity;
 import in.armando.travel_agency_back.io.UserRequest;
 import in.armando.travel_agency_back.io.UserResponse;
-
 import in.armando.travel_agency_back.repository.UserRepository;
 import in.armando.travel_agency_back.service.EmailService;
 import in.armando.travel_agency_back.service.UserService;
@@ -30,8 +29,6 @@ public class UserServiceImpl implements UserService {
     public UserResponse register(UserRequest request) {
         UserEntity newUser = convertToEntity(request);
 
-        String message;
-
         if (!request.getRole().equalsIgnoreCase("ROLE_ADMIN")) {
             newUser.setVerified(false);
 
@@ -41,11 +38,8 @@ public class UserServiceImpl implements UserService {
             newUser.setOtpExpiration(LocalDateTime.now().plusMinutes(10));
 
             emailService.sendOtp(newUser.getEmail(), otp);
-
-            message = "Usuario registrado correctamente. OTP enviado al correo.";
         } else {
             newUser.setVerified(true);
-            message = "Admin registrado correctamente.";
         }
 
         repository.save(newUser);
@@ -102,6 +96,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserResponse getUserById(String userId) {
+        UserEntity existingUser = repository.findByUserId(userId).orElseThrow(
+                () -> new RuntimeException("User not found"));
+        return convertToResponse(existingUser );
+    }
+
+    @Override
     public UserResponse verifyOtp(String email, String otp) {
         UserEntity user = repository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
@@ -124,8 +125,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity getUserByEmail(String email) {
-         return repository.findByEmail(email).orElseThrow(
+        return repository.findByEmail(email).orElseThrow(
                 () -> new RuntimeException("User not found"));
     }
+ 
 
 }

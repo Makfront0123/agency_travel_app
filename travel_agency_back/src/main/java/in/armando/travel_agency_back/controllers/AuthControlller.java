@@ -34,18 +34,20 @@ public class AuthControlller {
 
     @PostMapping("/login")
     public AuthResponse login(@RequestBody AuthRequest request) throws Exception {
-        authenticate(request.getEmail(), request.getPassword());
-
-        final UserEntity user = userService.getUserByEmail(request.getEmail());
-        if (!user.isVerified()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not verified");
+        try {
+            authenticate(request.getEmail(), request.getPassword());
+            final UserEntity user = userService.getUserByEmail(request.getEmail());
+            if (!user.isVerified()) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not verified");
+            }
+            final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
+            final String token = jwtUtil.generateToken(userDetails);
+            String role = userService.getUserRole(request.getEmail());
+            return new AuthResponse(
+                    request.getEmail(), role, token);
+        } catch (Exception e) {
+            throw new Error(e);
         }
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
-
-        final String token = jwtUtil.generateToken(userDetails);
-        String role = userService.getUserRole(request.getEmail());
-        return new AuthResponse(
-                request.getEmail(), role, token);
     }
 
     private void authenticate(String email, String password) throws Exception {

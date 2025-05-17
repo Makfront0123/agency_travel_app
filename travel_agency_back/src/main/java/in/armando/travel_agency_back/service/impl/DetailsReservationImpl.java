@@ -48,11 +48,11 @@ public class DetailsReservationImpl implements DetailsReservationService {
     }
 
     private DetailsReservationEntity convertToEntity(DetailsReservationRequest request) {
-        Long reservationId = request.getReservationId(); // ya es Long
+        Long reservationId = request.getReservationId();  
         ReservationEntity reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
 
-        Long flightId = request.getFlightId(); // ya es Long
+        Long flightId = request.getFlightId();  
         FlightEntity flight = flightRepository.findById(flightId)
                 .orElseThrow(() -> new IllegalArgumentException("Flight not found"));
 
