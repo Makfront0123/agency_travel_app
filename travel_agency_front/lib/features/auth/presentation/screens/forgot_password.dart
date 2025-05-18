@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:travel_agency_front/core/theme/app_colors.dart';
 import 'package:travel_agency_front/features/auth/presentation/widgets/auth_button.dart';
 import 'package:travel_agency_front/features/auth/presentation/widgets/auth_formfield.dart';
 import 'package:travel_agency_front/features/auth/presentation/widgets/text_form_wrapper.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+class ForgotPassword extends StatelessWidget {
+  const ForgotPassword({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +12,9 @@ class LoginScreen extends StatelessWidget {
     final passwordController = TextEditingController();
     final formKey = GlobalKey<FormState>();
 
-    void onLogin() {}
+    void onForgot() {
+      Navigator.pushNamed(context, '/verify');
+    }
 
     return Scaffold(
       body: Padding(
@@ -22,17 +23,17 @@ class LoginScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              'Sign in',
+              'Forgot Password',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
             ),
             const SizedBox(height: 50),
-            _buildForm(
-                emailController, passwordController, formKey, context, onLogin),
+            _buildForm(emailController, passwordController, formKey, context,
+                onForgot),
             const Spacer(),
             TextButtonWrapper(
-              title: 'Don\'t have an account?',
-              nameButton: 'Sign up',
-              onTap: () => Navigator.pushNamed(context, '/register'),
+              title: 'Remember Password?',
+              nameButton: 'Sign in',
+              onTap: () => Navigator.pushNamed(context, '/login'),
             ),
           ],
         ),
@@ -45,7 +46,7 @@ class LoginScreen extends StatelessWidget {
     TextEditingController passwordController,
     GlobalKey<FormState> formKey,
     BuildContext context,
-    VoidCallback onLogin,
+    VoidCallback onForgot,
   ) {
     return Form(
       key: formKey,
@@ -63,29 +64,9 @@ class LoginScreen extends StatelessWidget {
             },
           ),
           const SizedBox(height: 20),
-          AuthFormfield(
-            controller: passwordController,
-            label: 'Password',
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Password is required';
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 30),
-          TextButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/forgot');
-              },
-              child: const Text(
-                'Forgot Password?',
-                style: TextStyle(color: AppColors.primaryColor),
-              )),
-          const SizedBox(height: 40),
           AuthButton(
-            text: 'Login',
-            onTap: onLogin,
+            text: 'Continue',
+            onTap: onForgot,
           ),
         ],
       ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:travel_agency_front/features/auth/presentation/widget/auth_button.dart';
-import 'package:travel_agency_front/features/auth/presentation/widget/auth_formfield.dart';
-import 'package:travel_agency_front/features/auth/presentation/widget/auth_wrapper_text.dart';
-import 'package:travel_agency_front/features/auth/presentation/widget/check_remember.dart';
+import 'package:travel_agency_front/features/auth/presentation/widgets/auth_button.dart';
+import 'package:travel_agency_front/features/auth/presentation/widgets/auth_formfield.dart';
+import 'package:travel_agency_front/features/auth/presentation/widgets/check_remember.dart';
+import 'package:travel_agency_front/features/auth/presentation/widgets/text_form_wrapper.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});

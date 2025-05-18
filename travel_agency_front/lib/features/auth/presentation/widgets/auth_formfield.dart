@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:travel_agency_front/core/theme/app_colors.dart';
 
 class AuthFormfield extends StatelessWidget {
   final TextEditingController controller;
@@ -27,12 +26,8 @@ class AuthFormfield extends StatelessWidget {
       decoration: InputDecoration(
         labelText: label,
         hintText: label,
-        labelStyle: const TextStyle(
-          color: AppColors.textColor,
-          fontSize: 12,
-        ),
+        labelStyle: Theme.of(context).textTheme.labelMedium,
         filled: true,
-        fillColor: AppColors.lightTextColor,
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(10)),
           borderSide: BorderSide.none,

@@ -13,7 +13,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: AppProvider.allProviders,
+      providers: AppProvider.allprovider,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         initialRoute: AppRouter.wrapperRoute,
