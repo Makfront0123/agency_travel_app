@@ -10,6 +10,7 @@ class UserModel extends User {
     required super.token,
     required super.role,
     required super.id,
+    required super.lastName,
     required super.name,
     required super.email,
     required super.imageUser,
@@ -25,24 +26,26 @@ class UserModel extends User {
       UserModel(
         token: token,
         role: json['role'] ?? 'customer',
-        id: json['_id'],
-        name: json['name'],
-        email: json['email'],
+        id: json['userId'] ?? '', // antes _id
+        name: json['name'] ?? '',
+        lastName: json['lastName'] ?? '',
+        email: json['email'] ?? '',
         imageUser: json['imageUser'] ?? '',
-        accountVerified: json['accountVerified'] ?? false,
+        accountVerified: json['verified'] ?? false,
         otp: json['otp'],
         otpExpires: json['otpExpires'] != null
-            ? DateTime.parse(json['otpExpires'])
+            ? DateTime.tryParse(json['otpExpires'])
             : null,
         resetPasswordToken: json['resetPasswordToken'],
         resetPasswordExpires: json['resetPasswordExpires'] != null
-            ? DateTime.parse(json['resetPasswordExpires'])
+            ? DateTime.tryParse(json['resetPasswordExpires'])
             : null,
       );
 
   Map<String, dynamic> toJson() => {
         'id': id,
         'name': name,
+        'lastName': lastName,
         'email': email,
         'imageUser': imageUser,
         'accountVerified': accountVerified,
@@ -58,6 +61,7 @@ class UserModel extends User {
     return User(
       id: id,
       name: name,
+      lastName: lastName,
       email: email,
       imageUser: imageUser,
       accountVerified: accountVerified,

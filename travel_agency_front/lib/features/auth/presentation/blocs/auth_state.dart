@@ -91,5 +91,7 @@ class AuthOtpVerified extends AuthState {
   const AuthOtpVerified(this.message);
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [
+        message,
+      ];
 }

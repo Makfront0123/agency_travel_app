@@ -13,6 +13,7 @@ import 'package:travel_agency_front/features/auth/domain/usecases/reset_auth.dar
 import 'package:travel_agency_front/features/auth/domain/usecases/verify_forgot.dart';
 import 'package:travel_agency_front/features/auth/domain/usecases/verify_otp_user.dart';
 import 'package:travel_agency_front/features/auth/presentation/blocs/auth_bloc.dart';
+import 'package:travel_agency_front/features/auth/presentation/blocs/auth_event.dart';
 import 'package:travel_agency_front/features/auth/services/storage_services.dart';
 
 class AppProvider {
@@ -23,7 +24,7 @@ class AppProvider {
         /// Auth
         RepositoryProvider(
           create: (context) =>
-              AuthApiService(context.read<Dio>(), 'http://10.0.2.2:3000'),
+              AuthApiService(context.read<Dio>(), 'http://10.0.2.2:8080'),
         ),
         RepositoryProvider(
           create: (context) =>
@@ -66,7 +67,7 @@ class AppProvider {
             registerUser: context.read<RegisterUser>(),
             loginUser: context.read<LoginUser>(),
             logoutUser: context.read<LogoutUser>(),
-          ),
+          )..add(AppStarted()),
         ),
 
         // General

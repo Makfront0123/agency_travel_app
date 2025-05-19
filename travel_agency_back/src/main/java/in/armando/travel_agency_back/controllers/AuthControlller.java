@@ -17,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 import in.armando.travel_agency_back.entity.UserEntity;
 import in.armando.travel_agency_back.io.AuthRequest;
 import in.armando.travel_agency_back.io.AuthResponse;
+import in.armando.travel_agency_back.service.ActiveSessionService;
 import in.armando.travel_agency_back.service.UserService;
 import in.armando.travel_agency_back.utils.JwpUtil;
 import lombok.RequiredArgsConstructor;
@@ -31,22 +32,34 @@ public class AuthControlller {
     private final UserDetailsService userDetailsService;
     private final UserService userService;
     private final JwpUtil jwtUtil;
+    private final ActiveSessionService activeSessionService;
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody AuthRequest request) throws Exception {
+    public AuthResponse login(@RequestBody AuthRequest request) {
         try {
             authenticate(request.getEmail(), request.getPassword());
+
             final UserEntity user = userService.getUserByEmail(request.getEmail());
             if (!user.isVerified()) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not verified");
             }
+
+            if (activeSessionService.hasActiveSession(request.getEmail())) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "User already logged in");
+            }
+
             final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
             final String token = jwtUtil.generateToken(userDetails);
             String role = userService.getUserRole(request.getEmail());
-            return new AuthResponse(
-                    request.getEmail(), role, token);
+
+            activeSessionService.createSession(request.getEmail(), token);
+
+            return new AuthResponse(request.getEmail(), role, token, user.isVerified());
+
+        } catch (ResponseStatusException e) {
+            throw e;  
         } catch (Exception e) {
-            throw new Error(e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error", e);
         }
     }
 

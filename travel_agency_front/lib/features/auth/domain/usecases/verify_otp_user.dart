@@ -5,7 +5,7 @@ class VerifyAccount {
 
   VerifyAccount(this.repository);
 
-  Future<String> call(String otp, String email) {
+  Future<Map<String, dynamic>> call(String email, String otp) {
     return repository.verify(email, otp);
   }
 }

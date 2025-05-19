@@ -1,7 +1,11 @@
 // ignore_for_file: unused_element
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_agency_front/core/theme/app_colors.dart';
+import 'package:travel_agency_front/features/auth/presentation/blocs/auth_bloc.dart';
+import 'package:travel_agency_front/features/auth/presentation/blocs/auth_event.dart';
+import 'package:travel_agency_front/features/auth/presentation/blocs/auth_state.dart';
 import 'package:travel_agency_front/features/auth/presentation/widgets/text_form_wrapper.dart';
 
 class VerifyOtpScreen extends StatefulWidget {
@@ -18,6 +22,15 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
   String? email;
 
   @override
+  void initState() {
+    super.initState();
+    final state = context.read<AuthBloc>().state;
+    if (state is AuthRegistrationSuccess) {
+      email = state.user.email;
+    }
+  }
+
+  @override
   void dispose() {
     for (var c in _controllers) {
       c.dispose();
@@ -28,48 +41,88 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     super.dispose();
   }
 
-  void _onVerify() {}
+  void _onVerify() {
+    if (email != null) {
+      final otp = _controllers.map((e) => e.text).join();
 
-  void _resendOtp() {}
+      context.read<AuthBloc>().add(VerifyOtpEvent(otp: otp, email: email!));
+    }
+  }
+
+  void _resendOtp() {
+    if (email != null) {
+      context.read<AuthBloc>().add(ResendOtpEvent(email: email!));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Otp sent')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error Sending Otp')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 30),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Verification',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is AuthOtpVerified) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: Colors.green,
             ),
-            const SizedBox(height: 50),
-            const Text(
-              'An Authentication code has been sent to (+57) 301 92921',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),
+          );
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            Navigator.pushNamed(context, '/login');
+          });
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+          body: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 30),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'Verification',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
+                ),
+                const SizedBox(height: 50),
+                const Text(
+                  'An Authentication code has been sent to (+57) 301 92921',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),
+                ),
+                const SizedBox(height: 90),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: List.generate(4, (index) => _buildOtpBox(index)),
+                ),
+                const SizedBox(height: 30),
+                TextButtonWrapper(
+                  title: 'I didn’t receive code?',
+                  nameButton: 'Resend Code',
+                  onTap: _resendOtp,
+                ),
+                const SizedBox(height: 40),
+                ElevatedButton(
+                  onPressed: _onVerify,
+                  child: const Text("Verify"),
+                ),
+                const Spacer(),
+                TextButtonWrapper(
+                  title: 'Remember Password?',
+                  nameButton: 'Sign in',
+                  onTap: () => Navigator.pushNamed(context, '/login'),
+                ),
+              ],
             ),
-            const SizedBox(height: 90),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: List.generate(4, (index) => _buildOtpBox(index)),
-            ),
-            const SizedBox(height: 30),
-            TextButtonWrapper(
-              title: 'I didn’t receive code?',
-              nameButton: 'Resend Code',
-              onTap: () {},
-            ),
-            const Spacer(),
-            TextButtonWrapper(
-              title: 'Remember Password?',
-              nameButton: 'Sign in',
-              onTap: () => Navigator.pushNamed(context, '/login'),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 

@@ -20,10 +20,10 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<User> register(String name, String email, String password,
-      String confirmPassword) async {
-    final userModel =
-        await authApiService.register(name, email, password, confirmPassword);
+  Future<User> register(String name, String lastName, String email,
+      String password, String confirmPassword) async {
+    final userModel = await authApiService.register(
+        name, lastName, email, password, confirmPassword);
     return userModel;
   }
 
@@ -43,9 +43,8 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<String> verify(String email, String otp) async {
-    final message = await authApiService.verify(email, otp);
-    return message;
+  Future<Map<String, dynamic>> verify(String email, String otp) async {
+    return await authApiService.verify(email, otp);
   }
 
   @override

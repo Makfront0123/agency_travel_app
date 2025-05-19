@@ -13,15 +13,21 @@ import in.armando.travel_agency_back.entity.UserEntity;
 import in.armando.travel_agency_back.io.UserRequest;
 import in.armando.travel_agency_back.io.UserResponse;
 import in.armando.travel_agency_back.repository.UserRepository;
+import in.armando.travel_agency_back.service.ActiveSessionService;
 import in.armando.travel_agency_back.service.EmailService;
+import in.armando.travel_agency_back.service.TokenBlacklistService;
 import in.armando.travel_agency_back.service.UserService;
+import in.armando.travel_agency_back.utils.JwpUtil;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository repository;
-    final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
+    private final TokenBlacklistService tokenBlacklistService;
+    private final ActiveSessionService activeSessionService;
+    final JwpUtil jwtUtil;
 
     final EmailService emailService;
 
@@ -29,37 +35,31 @@ public class UserServiceImpl implements UserService {
     public UserResponse register(UserRequest request) {
         UserEntity newUser = convertToEntity(request);
 
-        if (!request.getRole().equalsIgnoreCase("ROLE_ADMIN")) {
-            newUser.setVerified(false);
+        newUser.setVerified(false);
+        String otp = String.format("%04d", new Random().nextInt(10000));
 
-            String otp = String.format("%06d", new Random().nextInt(999999));
-            newUser.setOtp(otp);
-
-            newUser.setOtpExpiration(LocalDateTime.now().plusMinutes(10));
-
-            emailService.sendOtp(newUser.getEmail(), otp);
-        } else {
-            newUser.setVerified(true);
-        }
+        newUser.setOtp(otp);
+        newUser.setOtpExpiration(LocalDateTime.now().plusMinutes(10));
+        emailService.sendOtp(newUser.getEmail(), otp);
 
         repository.save(newUser);
 
-        return convertToResponse(newUser );
+        return convertToResponse(newUser);
     }
 
     private UserEntity convertToEntity(UserRequest request) {
         return UserEntity.builder()
                 .userId(UUID.randomUUID().toString())
-                .name(request.getName())
-                .lastName(request.getLastName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
+                .name(request.getName().trim())
+                .lastName(request.getLastName().trim())
+                .email(request.getEmail().trim())
+                .password(passwordEncoder.encode(request.getPassword().trim()))
+                .role("ROLE_USER")
                 .build();
 
     }
 
-    private UserResponse convertToResponse(UserEntity request  ) {
+    private UserResponse convertToResponse(UserEntity request) {
         return UserResponse.builder()
                 .userId(request.getUserId())
                 .name(request.getName())
@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService {
     public List<UserResponse> getAllUsers() {
         return repository.findAll()
                 .stream()
-                .map(userEntity -> convertToResponse(userEntity ))
+                .map(userEntity -> convertToResponse(userEntity))
                 .collect(Collectors.toList());
     }
 
@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse getUserById(String userId) {
         UserEntity existingUser = repository.findByUserId(userId).orElseThrow(
                 () -> new RuntimeException("User not found"));
-        return convertToResponse(existingUser );
+        return convertToResponse(existingUser);
     }
 
     @Override
@@ -120,7 +120,7 @@ public class UserServiceImpl implements UserService {
         user.setOtpExpiration(null);
         repository.save(user);
 
-        return convertToResponse(user );
+        return convertToResponse(user);
     }
 
     @Override
@@ -128,6 +128,28 @@ public class UserServiceImpl implements UserService {
         return repository.findByEmail(email).orElseThrow(
                 () -> new RuntimeException("User not found"));
     }
- 
+
+    @Override
+    public String logout(String token) {
+        String email = jwtUtil.extractUsername(token); // O tu método equivalente para obtener el email
+        tokenBlacklistService.blacklistToken(token);
+        activeSessionService.removeSession(email); // ⬅️ Elimina la sesión activa
+        return "Logout successful";
+    }
+
+    @Override
+    public String resendOtp(String email) {
+        UserEntity user = repository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        String otp = String.format("%04d", new Random().nextInt(10000));
+        user.setOtp(otp);
+        user.setOtpExpiration(LocalDateTime.now().plusMinutes(10));
+        repository.save(user);
+
+        emailService.sendOtp(user.getEmail(), otp);
+
+        return "OTP reenviado correctamente";
+    }
 
 }

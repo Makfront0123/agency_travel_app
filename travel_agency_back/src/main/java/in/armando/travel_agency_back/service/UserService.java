@@ -14,4 +14,7 @@ public interface UserService {
     UserResponse verifyOtp(String email, String otp);
     UserEntity getUserByEmail(String email);
     UserResponse getUserById(String userId);
+    String logout(String token);
+    String resendOtp(String email);
+
 }

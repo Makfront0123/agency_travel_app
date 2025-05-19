@@ -7,17 +7,18 @@ class AuthApiService {
 
   AuthApiService(this._dio, this.baseUrl);
 
-  Future<UserModel> register(String name, String email, String password,
-      String confirmPassword) async {
+  Future<UserModel> register(String name, String lastName, String email,
+      String password, String confirmPassword) async {
     try {
-      final response = await _dio.post('$baseUrl/api/v1/register', data: {
+      final response = await _dio.post('$baseUrl/register', data: {
         'name': name,
+        'lastName': lastName,
         'email': email,
         'password': password,
         'confirmPassword': confirmPassword
       });
 
-      final userData = response.data['data']['user'];
+      final userData = response.data;
 
       final user = UserModel.fromJson(userData, token: '');
 
@@ -32,15 +33,15 @@ class AuthApiService {
 
   Future<UserModel> login(String email, String password) async {
     try {
-      final response = await _dio.post('$baseUrl/api/v1/login', data: {
+      final response = await _dio.post('$baseUrl/login', data: {
         'email': email,
         'password': password,
       });
-      final data = response.data['data'];
-      final token = data['token'];
-      final userJson = data['user'];
 
-      final user = UserModel.fromJson(userJson, token: token);
+      final data = response.data;
+      final token = data['token'];
+
+      final user = UserModel.fromJson(data, token: token);
 
       return user;
     } on DioException catch (e) {
@@ -69,21 +70,20 @@ class AuthApiService {
 
   Future<dynamic> logout() async {
     try {
-      final response = await _dio.post('$baseUrl/api/v1/logout');
-      final message = response.data['message'];
-      return message;
+      final response = await _dio.post('$baseUrl/logout');
+
+      return response.data;
     } catch (e) {
       return e;
     }
   }
 
-  Future<String> verify(String email, String otp) async {
+  Future<Map<String, dynamic>> verify(String email, String otp) async {
     try {
       final response = await _dio
-          .post('$baseUrl/api/v1/verify', data: {'email': email, 'otp': otp});
+          .post('$baseUrl/verify', data: {'email': email, 'otp': otp});
 
-      final message = response.data['message'];
-      return message;
+      return response.data;
     } on DioException catch (e) {
       final message = _extractErrorMessage(e);
       return Future.error(message);
@@ -95,7 +95,7 @@ class AuthApiService {
   Future<Map<String, dynamic>> forgotPassword(String email) async {
     try {
       final response = await _dio.post(
-        '$baseUrl/api/v1/forgot-password',
+        '$baseUrl/forgot-password',
         data: {'email': email},
       );
 
@@ -111,8 +111,8 @@ class AuthApiService {
 
   Future<Map<String, dynamic>> verifyForgot(String email, String otp) async {
     try {
-      final response = await _dio.post('$baseUrl/api/v1/verify-forgot',
-          data: {'email': email, 'otp': otp});
+      final response = await _dio
+          .post('$baseUrl/verify-forgot', data: {'email': email, 'otp': otp});
 
       return response.data;
     } on DioException catch (e) {
@@ -127,7 +127,7 @@ class AuthApiService {
   Future<Map<String, dynamic>> resetPassword(
       String email, String token, String password, String newPassword) async {
     try {
-      final response = await _dio.post('$baseUrl/api/v1/reset-password', data: {
+      final response = await _dio.post('$baseUrl/reset-password', data: {
         'email': email,
         'token': token,
         'password': password,
@@ -147,14 +147,11 @@ class AuthApiService {
   String _extractErrorMessage(DioException e) {
     try {
       final data = e.response?.data;
-
       if (data is Map<String, dynamic>) {
         final message = data['message'];
         if (message is String) return message;
       }
-
       if (data is String) return data;
-
       return e.message ?? 'Login failed';
     } catch (_) {
       return 'Login failed';
@@ -163,7 +160,7 @@ class AuthApiService {
 
   Future<Map<String, dynamic>> resendOtp(String email) async {
     try {
-      final response = await _dio.post('$baseUrl/api/v1/resend-otp', data: {
+      final response = await _dio.post('$baseUrl/resend-otp', data: {
         'email': email,
       });
 
@@ -179,8 +176,7 @@ class AuthApiService {
 
   Future<Map<String, dynamic>> resendForgotPasswordOtp(String email) async {
     try {
-      final response =
-          await _dio.post('$baseUrl/api/v1/resend-forgot-otp', data: {
+      final response = await _dio.post('$baseUrl/resend-forgot-otp', data: {
         'email': email,
       });
 

@@ -6,8 +6,9 @@ class RegisterUser {
 
   RegisterUser(this.repository);
 
-  Future<User> call(
-      String name, String email, String password, String confirmPassword) {
-    return repository.register(name, email, password, confirmPassword);
+  Future<User> call(String name, String lastName, email, String password,
+      String confirmPassword) {
+    return repository.register(
+        name, lastName, email, password, confirmPassword);
   }
 }

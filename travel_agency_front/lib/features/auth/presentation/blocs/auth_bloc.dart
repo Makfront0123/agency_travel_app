@@ -89,7 +89,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthVerificationSuccess());
       }
     } catch (e) {
-      emit(AuthError(e.toString()));
+      emit(AuthError("Failed to login: ${e.toString()}"));
     }
   }
 
@@ -99,6 +99,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       final user = await _registerUser(
         event.name,
+        event.lastName,
         event.email,
         event.password,
         event.confirmPassword,
@@ -113,11 +114,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _onVerifyOtp(
       VerifyOtpEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
+
     try {
-      final message = await _verifyOtp(event.otp, event.email);
-      emit(AuthOtpVerified(message));
+      await _verifyOtp(event.email, event.otp);
+
+      emit(const AuthOtpVerified('OTP Verified Successfully'));
     } catch (e) {
-      emit(AuthError(e.toString()));
+      String errorMessage;
+      if (e is String) {
+        errorMessage = e;
+      } else if (e is Exception) {
+        errorMessage = e.toString();
+      } else {
+        errorMessage = 'Unknown error';
+      }
+      emit(AuthError(errorMessage));
     }
   }
 
