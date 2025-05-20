@@ -59,9 +59,8 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Map<String, dynamic>> resetPassword(
-      String email, String token, String password, String newPassword) async {
-    return await authApiService.resetPassword(
-        email, token, password, newPassword);
+      String email, String password, String newPassword) async {
+    return await authApiService.resetPassword(email, password, newPassword);
   }
 
   @override

@@ -95,11 +95,13 @@ class AuthApiService {
   Future<Map<String, dynamic>> forgotPassword(String email) async {
     try {
       final response = await _dio.post(
-        '$baseUrl/forgot-password',
+        '$baseUrl/forgot',
         data: {'email': email},
       );
 
-      return response.data;
+      return {
+        'message': response.data.toString(),
+      };
     } on DioException catch (e) {
       final message = _extractErrorMessage(e);
 
@@ -112,7 +114,9 @@ class AuthApiService {
   Future<Map<String, dynamic>> verifyForgot(String email, String otp) async {
     try {
       final response = await _dio
-          .post('$baseUrl/verify-forgot', data: {'email': email, 'otp': otp});
+          .post('$baseUrl/verifyForgot', data: {'email': email, 'otp': otp});
+
+      print(response.data);
 
       return response.data;
     } on DioException catch (e) {
@@ -125,16 +129,18 @@ class AuthApiService {
   }
 
   Future<Map<String, dynamic>> resetPassword(
-      String email, String token, String password, String newPassword) async {
+      String email, String password, String newPassword) async {
     try {
       final response = await _dio.post('$baseUrl/reset-password', data: {
         'email': email,
-        'token': token,
         'password': password,
         'newPassword': newPassword
       });
 
-      return response.data;
+      print(response.data);
+      return {
+        'message': response.data.toString(),
+      };
     } on DioException catch (e) {
       final message = _extractErrorMessage(e);
 

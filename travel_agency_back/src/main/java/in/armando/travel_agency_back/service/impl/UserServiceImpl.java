@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
                 .email(request.getEmail())
                 .role(request.getRole())
                 .verified(request.isVerified())
-
+                .otp(request.getOtp())
                 .createdAt(request.getCreatedAt())
                 .updatedAt(request.getUpdatedAt())
                 .build();
@@ -150,6 +150,55 @@ public class UserServiceImpl implements UserService {
         emailService.sendOtp(user.getEmail(), otp);
 
         return "OTP reenviado correctamente";
+    }
+
+    @Override
+    public String forgot(String email) {
+        UserEntity user = repository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        String otp = String.format("%04d", new Random().nextInt(10000));
+        user.setOtp(otp);
+        user.setOtpExpiration(LocalDateTime.now().plusMinutes(10));
+        repository.save(user);
+
+        emailService.sendOtp(user.getEmail(), otp);
+
+        return "OTP reenviado correctamente";
+    }
+
+    @Override
+    public UserResponse verifyOtpForgot(String email, String otp) {
+        UserEntity user = repository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (user.getOtp() == null || !user.getOtp().equals(otp)) {
+            throw new RuntimeException("Código OTP inválido o ya usado");
+        }
+
+        if (user.getOtpExpiration().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("El OTP ha expirado");
+        }
+
+        user.setOtp(null);
+        user.setOtpExpiration(null);
+        repository.save(user);
+
+        return convertToResponse(user);
+    }
+
+    @Override
+    public String resetPassword(String email,  String password, String newPassword) {
+        UserEntity user = repository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+   
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+         
+        repository.save(user);
+
+        return "Password reset successfully";
     }
 
 }

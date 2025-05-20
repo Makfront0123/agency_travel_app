@@ -147,12 +147,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       VerifyForgotEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
-      final res = await _verifyForgot(event.otp, event.email);
+      await _verifyForgot(event.otp, event.email);
 
-      final token = res['data']['token'];
       emit(AuthOtpVerifiedForReset(
         email: event.email,
-        token: token,
+        token: '',
       ));
     } catch (e) {
       emit(AuthError(e.toString()));
@@ -163,8 +162,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       ResetPasswordEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
-      final response = await _resetPassword(
-          event.email, event.token, event.password, event.newPassword);
+      final response =
+          await _resetPassword(event.email, event.password, event.newPassword);
       emit(AuthResetPasswordSuccess(response['message']));
     } catch (e) {
       emit(AuthError(e.toString()));

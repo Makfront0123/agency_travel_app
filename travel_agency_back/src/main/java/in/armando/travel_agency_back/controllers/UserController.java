@@ -92,4 +92,39 @@ public class UserController {
         }
     }
 
+    @PostMapping("/forgot")
+    public ResponseEntity<String> resendOtpForgot(@RequestBody OtpRequest request) {
+        try {
+            return ResponseEntity.ok(userService.forgot(request.getEmail()));
+        } catch (RuntimeException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno");
+        }
+    }
+
+    @PostMapping("/verifyForgot")
+    public ResponseEntity<UserResponse> verifyOtpForgot(@RequestBody OtpRequest request) {
+        try {
+            return ResponseEntity.ok(userService.verifyOtpForgot(request.getEmail(), request.getOtp()));
+
+        } catch (RuntimeException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno");
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody OtpRequest request) {
+        try {
+            return ResponseEntity
+                    .ok(userService.resetPassword(request.getEmail(), request.getPassword(), request.getNewPassword()));
+        } catch (RuntimeException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno");
+        }
+    }
+
 }

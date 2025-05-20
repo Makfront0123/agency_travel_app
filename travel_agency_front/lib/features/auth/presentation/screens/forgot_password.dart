@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travel_agency_front/features/application/presentation/widgets/load_screen.dart';
+import 'package:travel_agency_front/features/auth/presentation/blocs/auth_bloc.dart';
+import 'package:travel_agency_front/features/auth/presentation/blocs/auth_event.dart';
+import 'package:travel_agency_front/features/auth/presentation/blocs/auth_state.dart';
 import 'package:travel_agency_front/features/auth/presentation/widgets/auth_button.dart';
 import 'package:travel_agency_front/features/auth/presentation/widgets/auth_formfield.dart';
 import 'package:travel_agency_front/features/auth/presentation/widgets/text_form_wrapper.dart';
@@ -9,43 +14,71 @@ class ForgotPassword extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final emailController = TextEditingController();
-    final passwordController = TextEditingController();
+
     final formKey = GlobalKey<FormState>();
 
     void onForgot() {
-      Navigator.pushNamed(context, '/verify');
+      context.read<AuthBloc>().add(ForgotEvent(email: emailController.text));
     }
 
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 30),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Forgot Password',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) {
+        print(state);
+        if (state is AuthForgotPasswordOtpSent) {
+          Future.delayed(const Duration(milliseconds: 500), () {
+            Navigator.pushReplacementNamed(
+              // ignore: use_build_context_synchronously
+              context,
+              '/verifyForgot',
+              arguments: emailController.text,
+            );
+          });
+        }
+        if (state is AuthError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: Colors.red,
             ),
-            const SizedBox(height: 50),
-            _buildForm(emailController, passwordController, formKey, context,
-                onForgot),
-            const Spacer(),
-            TextButtonWrapper(
-              title: 'Remember Password?',
-              nameButton: 'Sign in',
-              onTap: () => Navigator.pushNamed(context, '/login'),
+          );
+          context.read<AuthBloc>().add(ResetAuthState());
+        }
+      },
+      builder: (context, state) {
+        final isLoading = state is AuthLoading;
+        return LoadScreen(
+          isLoading: isLoading,
+          child: Scaffold(
+            body: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 30),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Forgot Password',
+                    style:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
+                  ),
+                  const SizedBox(height: 50),
+                  _buildForm(emailController, formKey, onForgot),
+                  const Spacer(),
+                  TextButtonWrapper(
+                    title: 'Remember Password?',
+                    nameButton: 'Sign in',
+                    onTap: () => Navigator.pushNamed(context, '/login'),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
   Widget _buildForm(
     TextEditingController emailController,
-    TextEditingController passwordController,
     GlobalKey<FormState> formKey,
-    BuildContext context,
     VoidCallback onForgot,
   ) {
     return Form(

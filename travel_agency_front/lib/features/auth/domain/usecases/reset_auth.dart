@@ -7,13 +7,11 @@ class ResetAuth {
 
   Future<Map<String, dynamic>> call(
     String email,
-    String token,
     String password,
     String newPassword,
   ) {
     return repository.resetPassword(
       email,
-      token,
       password,
       newPassword,
     );
