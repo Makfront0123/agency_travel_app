@@ -68,7 +68,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       return;
     }
     try {
-      final user = await _loginUser.autoLoginWithToken(token);
+      final user = await _loginUser.autoLoginWithToken(token); // Usa token
       emit(Authenticated(user: user));
     } catch (e) {
       await _storageService.clearToken();
@@ -211,3 +211,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 }
+
+
+
+
+
+/*
+eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiQGdtYWlsLmNvbSIsImV4cCI6MTc0Nzg4MDgxNCwiaWF0IjoxNzQ3ODQ0ODE0fQ.kcLWH_BlrxcKCW5uxHvjE4fyEh-5bgd-L8tr7pFjk34
+ */

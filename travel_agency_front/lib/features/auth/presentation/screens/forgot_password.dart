@@ -23,7 +23,6 @@ class ForgotPassword extends StatelessWidget {
 
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
-        print(state);
         if (state is AuthForgotPasswordOtpSent) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.pushReplacementNamed(

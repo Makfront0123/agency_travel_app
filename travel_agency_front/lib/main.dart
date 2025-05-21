@@ -4,7 +4,8 @@ import 'package:travel_agency_front/app/app_provider.dart';
 import 'package:travel_agency_front/app/router.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(MultiBlocProvider(
+      providers: AppProvider.allprovider, child: const MainApp()));
 }
 
 class MainApp extends StatelessWidget {
@@ -12,13 +13,10 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: AppProvider.allprovider,
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        initialRoute: AppRouter.wrapperRoute,
-        routes: AppRouter.routes,
-      ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      initialRoute: AppRouter.wrapperRoute,
+      routes: AppRouter.routes,
     );
   }
 }

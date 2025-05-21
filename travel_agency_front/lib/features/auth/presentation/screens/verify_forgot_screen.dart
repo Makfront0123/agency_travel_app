@@ -37,7 +37,6 @@ class _VerifyForgotScreenState extends State<VerifyForgotScreen> {
     final args = ModalRoute.of(context)?.settings.arguments;
     if (args != null && args is String) {
       email = args;
-      print(email);
     }
   }
 
@@ -77,9 +76,7 @@ class _VerifyForgotScreenState extends State<VerifyForgotScreen> {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        print('state: $state');
         if (state is AuthError) {
-          print(state.message);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
@@ -124,7 +121,7 @@ class _VerifyForgotScreenState extends State<VerifyForgotScreen> {
               TextButtonWrapper(
                 title: 'I didn’t receive code?',
                 nameButton: 'Resend Code',
-                onTap: () {},
+                onTap: _resendOtp,
               ),
               const SizedBox(height: 40),
               ElevatedButton(

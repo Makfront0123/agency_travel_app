@@ -95,3 +95,5 @@ class AuthOtpVerified extends AuthState {
         message,
       ];
 }
+
+class AuthCheckingSession extends AuthState {}

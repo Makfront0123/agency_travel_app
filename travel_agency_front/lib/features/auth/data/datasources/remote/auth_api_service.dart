@@ -54,7 +54,7 @@ class AuthApiService {
 
   Future<UserModel> getCurrentUser(String token) async {
     try {
-      final response = await _dio.get('$baseUrl/api/v1/check-auth',
+      final response = await _dio.get('$baseUrl/check-auth',
           options: Options(headers: {'Authorization': 'Bearer $token'}));
 
       final data = response.data;
@@ -116,8 +116,6 @@ class AuthApiService {
       final response = await _dio
           .post('$baseUrl/verifyForgot', data: {'email': email, 'otp': otp});
 
-      print(response.data);
-
       return response.data;
     } on DioException catch (e) {
       final message = _extractErrorMessage(e);
@@ -137,7 +135,6 @@ class AuthApiService {
         'newPassword': newPassword
       });
 
-      print(response.data);
       return {
         'message': response.data.toString(),
       };
@@ -196,3 +193,9 @@ class AuthApiService {
     }
   }
 }
+
+
+/*
+ eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiQGdtYWlsLmNvbSIsImV4cCI6MTc0Nzg4MDM3MSwiaWF0IjoxNzQ3ODQ0MzcxfQ.cHqftpqoX2_dN9N7FjbC85tK6Kd8ZeuBHW28sosqDH8
+
+ */

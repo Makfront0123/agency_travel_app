@@ -1,6 +1,7 @@
 package in.armando.travel_agency_back.controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +15,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import in.armando.travel_agency_back.entity.UserEntity;
 import in.armando.travel_agency_back.io.OtpRequest;
 import in.armando.travel_agency_back.io.UserRequest;
 import in.armando.travel_agency_back.io.UserResponse;
+import in.armando.travel_agency_back.service.TokenBlacklistService;
 import in.armando.travel_agency_back.service.UserService;
+import in.armando.travel_agency_back.utils.JwpUtil;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -25,6 +30,8 @@ import lombok.RequiredArgsConstructor;
 
 public class UserController {
     private final UserService userService;
+    private final TokenBlacklistService tokenBlacklistService;
+    private final JwpUtil jwtUtil;
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
@@ -124,6 +131,41 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno");
+        }
+    }
+
+    @GetMapping("/check-auth")
+    public ResponseEntity<?> checkAuth(@RequestHeader("Authorization") String authHeader) {
+        try {
+            String token = authHeader.replace("Bearer ", "");
+
+        
+            if (tokenBlacklistService.isTokenBlacklisted(token)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body("Token has been blacklisted");
+            }
+ 
+            String email = jwtUtil.extractUsername(token);
+            UserEntity user = userService.getUserByEmail(email);
+
+        
+            UserResponse response = UserResponse.builder()
+                    .userId(user.getUserId())
+                    .name(user.getName())
+                    .lastName(user.getLastName())
+                    .email(user.getEmail())
+                    .role(user.getRole())
+                    .verified(user.isVerified())
+                    .createdAt(user.getCreatedAt())
+                    .updatedAt(user.getUpdatedAt())
+                    .build();
+
+            return ResponseEntity.ok(Map.of("data", response));
+
+        } catch (ExpiredJwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token expired");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
         }
     }
 

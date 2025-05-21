@@ -15,6 +15,10 @@ import 'package:travel_agency_front/features/auth/domain/usecases/verify_otp_use
 import 'package:travel_agency_front/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:travel_agency_front/features/auth/presentation/blocs/auth_event.dart';
 import 'package:travel_agency_front/features/auth/services/storage_services.dart';
+import 'package:travel_agency_front/features/home/data/datasources/home_api_services.dart';
+import 'package:travel_agency_front/features/home/data/repository/home_repository_impl.dart';
+import 'package:travel_agency_front/features/home/domain/usecases/get_all_airports.dart';
+import 'package:travel_agency_front/features/home/presentation/blocs/home_bloc.dart';
 
 class AppProvider {
   static get allprovider => [
@@ -72,5 +76,25 @@ class AppProvider {
 
         // General
         BlocProvider(create: (_) => ApplicationBloc()),
+
+        /// Home
+        RepositoryProvider(
+          create: (context) =>
+              HomeApiService(context.read<Dio>(), 'http://10.0.2.2:8080'),
+        ),
+        RepositoryProvider(
+          create: (context) =>
+              HomeRepositoryImpl(context.read<HomeApiService>()),
+        ),
+        RepositoryProvider(
+          create: (context) =>
+              GetAllAirportsUsecase(context.read<HomeRepositoryImpl>()),
+        ),
+
+        BlocProvider(
+          create: (context) => HomeBloc(
+            getAllAirportsUsecase: context.read<GetAllAirportsUsecase>(),
+          ),
+        ),
       ];
 }

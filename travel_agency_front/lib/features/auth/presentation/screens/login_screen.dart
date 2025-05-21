@@ -27,6 +27,10 @@ class LoginScreen extends StatelessWidget {
       }
     }
 
+    void logout() {
+      context.read<AuthBloc>().add(const LogoutEvent());
+    }
+
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is Authenticated) {
@@ -73,6 +77,10 @@ class LoginScreen extends StatelessWidget {
                     title: 'Don\'t have an account?',
                     nameButton: 'Sign up',
                     onTap: () => Navigator.pushNamed(context, '/register'),
+                  ),
+                  ElevatedButton(
+                    onPressed: logout,
+                    child: const Text('Logout'),
                   ),
                 ],
               ),

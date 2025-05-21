@@ -37,7 +37,6 @@ class _ResetScreenState extends State<ResetScreen> {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        print(state);
         if (state is AuthResetPasswordSuccess) {
           Navigator.pushReplacementNamed(context, '/login');
         }
