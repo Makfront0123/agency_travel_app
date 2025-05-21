@@ -2,8 +2,8 @@
 package in.armando.travel_agency_back.service.impl;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -44,6 +44,7 @@ public class AirportServiceImpl implements AirportService {
                 .code(request.getCode())
                 .city(request.getCity())
                 .country(request.getCountry())
+                .image(request.getImage())
                 .build();
     }
 
@@ -54,6 +55,7 @@ public class AirportServiceImpl implements AirportService {
                 .code(entity.getCode())
                 .city(entity.getCity())
                 .country(entity.getCountry())
+                .image(entity.getImage())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .build();

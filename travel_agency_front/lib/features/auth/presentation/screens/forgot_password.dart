@@ -25,15 +25,15 @@ class ForgotPassword extends StatelessWidget {
       listener: (context, state) {
         print(state);
         if (state is AuthForgotPasswordOtpSent) {
-          Future.delayed(const Duration(milliseconds: 500), () {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.pushReplacementNamed(
-              // ignore: use_build_context_synchronously
               context,
               '/verifyForgot',
               arguments: emailController.text,
             );
           });
         }
+
         if (state is AuthError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

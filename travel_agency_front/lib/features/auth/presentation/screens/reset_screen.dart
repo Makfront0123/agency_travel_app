@@ -39,12 +39,7 @@ class _ResetScreenState extends State<ResetScreen> {
       listener: (context, state) {
         print(state);
         if (state is AuthResetPasswordSuccess) {
-          Future.delayed(const Duration(milliseconds: 500), () {
-            if (mounted) {
-              // ignore: use_build_context_synchronously
-              Navigator.pushReplacementNamed(context, '/login');
-            }
-          });
+          Navigator.pushReplacementNamed(context, '/login');
         }
         if (state is AuthError) {
           ScaffoldMessenger.of(context).showSnackBar(

@@ -12,6 +12,7 @@ public class AirportResponse{
     private String code;
     private String city;
     private String country;
+    private String image;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 }
