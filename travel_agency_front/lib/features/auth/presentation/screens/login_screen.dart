@@ -27,10 +27,6 @@ class LoginScreen extends StatelessWidget {
       }
     }
 
-    void logout() {
-      context.read<AuthBloc>().add(const LogoutEvent());
-    }
-
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is Authenticated) {
@@ -38,13 +34,7 @@ class LoginScreen extends StatelessWidget {
         } else if (state is AuthVerificationSuccess) {
           Navigator.pushReplacementNamed(context, '/verify');
         } else if (state is AuthError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: Colors.red,
-            ),
-          );
-          context.read<AuthBloc>().add(ResetAuthState());
+          context.read<AuthBloc>().add(const LogoutEvent());
         } else if (state is AuthResetPasswordSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -77,10 +67,6 @@ class LoginScreen extends StatelessWidget {
                     title: 'Don\'t have an account?',
                     nameButton: 'Sign up',
                     onTap: () => Navigator.pushNamed(context, '/register'),
-                  ),
-                  ElevatedButton(
-                    onPressed: logout,
-                    child: const Text('Logout'),
                   ),
                 ],
               ),
@@ -143,3 +129,11 @@ class LoginScreen extends StatelessWidget {
     );
   }
 }
+
+
+/*
+{
+	"email":"admin@gmail.com",
+	"password":"12345324"
+}
+ */

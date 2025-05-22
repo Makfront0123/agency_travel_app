@@ -1,5 +1,5 @@
-import 'package:travel_agency_front/features/home/domain/entities/airport.dart';
+import 'package:travel_agency_front/features/home/data/models/airport_model.dart';
 
 abstract class HomeRepository {
-  Future<List<Airport>> getAllAirports();
+  Future<List<AirportModel>> getAllAirports(String token);
 }

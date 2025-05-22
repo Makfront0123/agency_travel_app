@@ -9,4 +9,5 @@ public interface AirportService {
     AirportResponse add(AirportRequest request);
     List<AirportResponse> getAll();
     void delete(String airportId);
+    List<AirportResponse> getAirportsWithCheapestFlight();
 }

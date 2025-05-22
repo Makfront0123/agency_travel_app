@@ -1,11 +1,11 @@
-import 'package:travel_agency_front/features/home/domain/entities/airport.dart';
+import 'package:travel_agency_front/features/home/data/models/airport_model.dart';
 
 class HomeState {}
 
 class HomeLoading extends HomeState {}
 
 class HomeLoaded extends HomeState {
-  final List<Airport> airports;
+  final List<AirportModel> airports;
 
   HomeLoaded(this.airports);
 }

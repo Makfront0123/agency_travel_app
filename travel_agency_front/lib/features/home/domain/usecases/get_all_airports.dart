@@ -1,4 +1,4 @@
-import 'package:travel_agency_front/features/home/domain/entities/airport.dart';
+import 'package:travel_agency_front/features/home/data/models/airport_model.dart';
 import 'package:travel_agency_front/features/home/domain/repository/home_repository.dart';
 
 class GetAllAirportsUsecase {
@@ -6,7 +6,7 @@ class GetAllAirportsUsecase {
 
   GetAllAirportsUsecase(this.homeRepository);
 
-  Future<List<Airport>> call() async {
-    return homeRepository.getAllAirports();
+  Future<List<AirportModel>> call(String token) async {
+    return homeRepository.getAllAirports(token);
   }
 }

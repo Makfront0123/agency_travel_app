@@ -44,9 +44,7 @@ public class AuthControlller {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not verified");
             }
 
-            if (activeSessionService.hasActiveSession(request.getEmail())) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "User already logged in");
-            }
+         
 
             final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
             final String token = jwtUtil.generateToken(userDetails);

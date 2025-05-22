@@ -1,34 +1,30 @@
 class AirportModel {
   final String airportId;
   final String name;
-  final String code;
   final String city;
   final String country;
-  final String image;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final String? image;
+  final double? cheapestFlightPrice;
 
   AirportModel({
     required this.airportId,
     required this.name,
-    required this.code,
     required this.city,
     required this.country,
-    required this.image,
-    required this.createdAt,
-    required this.updatedAt,
+    this.image,
+    this.cheapestFlightPrice,
   });
 
   factory AirportModel.fromJson(Map<String, dynamic> json) {
     return AirportModel(
-      airportId: json['airportId'] as String,
-      name: json['name'] as String,
-      code: json['code'] as String,
-      city: json['city'] as String,
-      country: json['country'] as String,
-      image: json['image'] as String,
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      airportId: json['airportId'] ?? '',
+      name: json['name'] ?? '',
+      city: json['city'] ?? '',
+      country: json['country'] ?? '',
+      image: json['image'],
+      cheapestFlightPrice: json['cheapestFlightPrice'] != null
+          ? double.tryParse(json['cheapestFlightPrice'].toString())
+          : null,
     );
   }
 }

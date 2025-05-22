@@ -3,6 +3,7 @@ package in.armando.travel_agency_back.controllers;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -43,5 +44,12 @@ public class AirportController {
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
+    }
+
+    @GetMapping("/airport/with-prices")
+    public ResponseEntity<List<AirportResponse>> getAirportsWithPrices() {
+        List<AirportResponse> airports = service.getAirportsWithCheapestFlight()
+        ;
+        return ResponseEntity.ok(airports);
     }
 }

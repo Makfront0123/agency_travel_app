@@ -1,5 +1,5 @@
 import 'package:travel_agency_front/features/home/data/datasources/home_api_services.dart';
-import 'package:travel_agency_front/features/home/domain/entities/airport.dart';
+import 'package:travel_agency_front/features/home/data/models/airport_model.dart';
 import 'package:travel_agency_front/features/home/domain/repository/home_repository.dart';
 
 class HomeRepositoryImpl implements HomeRepository {
@@ -7,7 +7,7 @@ class HomeRepositoryImpl implements HomeRepository {
 
   HomeRepositoryImpl(this.homeApiService);
   @override
-  Future<List<Airport>> getAllAirports() {
-    return homeApiService.getAllAirports();
+  Future<List<AirportModel>> getAllAirports(String token) {
+    return homeApiService.getAllAirports(token);
   }
 }

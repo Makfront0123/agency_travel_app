@@ -6,8 +6,10 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import in.armando.travel_agency_back.entity.UserEntity;
 import in.armando.travel_agency_back.io.UserRequest;
@@ -188,17 +190,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String resetPassword(String email,  String password, String newPassword) {
+    public String resetPassword(String email, String password, String newPassword) {
         UserEntity user = repository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-   
-
         user.setPassword(passwordEncoder.encode(newPassword));
-         
+
         repository.save(user);
 
         return "Password reset successfully";
+    }
+
+    @Override
+    public String logoutByEmail(String email) {
+        String token = jwtUtil.extractToken(email); // ← se recupera de memoria
+        if (token == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No active session for this user.");
+        }
+        tokenBlacklistService.blacklistToken(token);
+        activeSessionService.removeSession(email);
+        return "Logout successful";
     }
 
 }

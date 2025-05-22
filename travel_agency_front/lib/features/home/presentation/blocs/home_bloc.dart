@@ -16,7 +16,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       GetAllAirportsEvent event, Emitter<HomeState> emit) async {
     emit(HomeLoading());
     try {
-      final airports = await _getAllAirportsUsecase();
+      final airports = await _getAllAirportsUsecase(event.token);
       emit(HomeLoaded(airports));
     } catch (e) {
       emit(HomeError(e.toString()));

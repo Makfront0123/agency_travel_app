@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -88,6 +89,11 @@ public class UserController {
         return ResponseEntity.ok(userService.logout(token));
     }
 
+    @GetMapping("/users/logout")
+    public ResponseEntity<String> logoutByEmail(@RequestParam String email) {
+        return ResponseEntity.ok(userService.logoutByEmail(email));
+    }
+
     @PostMapping("/resend-otp")
     public ResponseEntity<String> resendOtp(@RequestBody OtpRequest request) {
         try {
@@ -139,16 +145,14 @@ public class UserController {
         try {
             String token = authHeader.replace("Bearer ", "");
 
-        
             if (tokenBlacklistService.isTokenBlacklisted(token)) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body("Token has been blacklisted");
             }
- 
+
             String email = jwtUtil.extractUsername(token);
             UserEntity user = userService.getUserByEmail(email);
 
-        
             UserResponse response = UserResponse.builder()
                     .userId(user.getUserId())
                     .name(user.getName())

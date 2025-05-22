@@ -29,13 +29,10 @@ public class AirportServiceImpl implements AirportService {
     @Override
     public List<AirportResponse> getAll() {
         return repository.findAll()
-               .stream()  
-                .map(airportEntity -> convertToResponse(airportEntity))  
-                .collect(Collectors.toList()); 
+                .stream()
+                .map(airportEntity -> convertToResponse(airportEntity))
+                .collect(Collectors.toList());
     }
-
-    
-  
 
     private AirportEntity convertToEntity(AirportRequest request) {
         return AirportEntity.builder()
@@ -64,10 +61,24 @@ public class AirportServiceImpl implements AirportService {
     @Override
     public void delete(String airportId) {
         AirportEntity existingAirport = repository.findByAirportId(airportId).orElseThrow(
-            ()-> new RuntimeException("Airport not found"+airportId)
-        );
+                () -> new RuntimeException("Airport not found" + airportId));
         repository.delete(existingAirport);
     }
 
+    @Override
+    public List<AirportResponse> getAirportsWithCheapestFlight() {
+        List<Object[]> results = repository.findAirportsWithCheapestFlightRaw();
+
+        return results.stream()
+                .map((Object[] r) -> AirportResponse.builder()
+                        .airportId(String.valueOf(r[0])) 
+                        .name((String) r[1])
+                        .city((String) r[2])
+                        .country((String) r[3])
+                        .image((String) r[4])
+                        .cheapestFlightPrice(r[5] != null ? ((Number) r[5]).doubleValue() : null)
+                        .build())
+                .collect(Collectors.toList());
+    }
 
 }

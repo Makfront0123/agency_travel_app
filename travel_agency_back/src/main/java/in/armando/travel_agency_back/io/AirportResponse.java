@@ -6,13 +6,15 @@ import java.sql.Timestamp;
 
 @Builder
 @Data
-public class AirportResponse{
+// Ya existe
+public class AirportResponse {
     private String airportId;
     private String name;
     private String code;
     private String city;
     private String country;
     private String image;
+    private Double cheapestFlightPrice;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 }
