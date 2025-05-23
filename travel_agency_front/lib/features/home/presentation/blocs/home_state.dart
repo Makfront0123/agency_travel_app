@@ -17,3 +17,32 @@ class HomeError extends HomeState {
 }
 
 class HomeInitial extends HomeState {}
+
+class SearchFlightsLoading extends HomeState {}
+
+class SearchFlightsLoaded extends HomeState {
+  final List<AirportModel> airports;
+
+  SearchFlightsLoaded(this.airports);
+}
+
+class SearchFlightsError extends HomeState {
+  final String message;
+
+  SearchFlightsError(this.message);
+}
+
+class LoadFlightCitiesLoading extends HomeState {}
+
+class LoadFlightCitiesLoaded extends HomeState {
+  final List<String> origins;
+  final List<String> destinations;
+
+  LoadFlightCitiesLoaded(this.origins, this.destinations);
+}
+
+class LoadFlightCitiesError extends HomeState {
+  final String message;
+
+  LoadFlightCitiesError(this.message);
+}

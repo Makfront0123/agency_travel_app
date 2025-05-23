@@ -10,4 +10,15 @@ class HomeRepositoryImpl implements HomeRepository {
   Future<List<AirportModel>> getAllAirports(String token) {
     return homeApiService.getAllAirports(token);
   }
+
+  @override
+  Future<List<AirportModel>> searchFlights(
+      String from, String to, String date, String token) {
+    return homeApiService.searchFlights(from, to, date, token);
+  }
+
+  @override
+  Future<void> loadFlightCities(String token) async {
+    await homeApiService.loadFlightCities(token);
+  }
 }

@@ -4,11 +4,12 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import in.armando.travel_agency_back.io.FlightOptionsResponse;
 import in.armando.travel_agency_back.io.FlightRequest;
 import in.armando.travel_agency_back.io.FlightResponse;
 import in.armando.travel_agency_back.service.FlightService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,6 +39,26 @@ public class FlightController {
     public void deleteFlight(@PathVariable String flightId) {
         try {
             service.delete(flightId);
+        } catch (Exception e) {
+            throw new Error(e);
+        }
+    }
+
+    @GetMapping("/flight/search/options")
+    public FlightOptionsResponse getFlightSearchOptions() {
+        try {
+            return service.getFlightOptions();
+        } catch (Exception e) {
+            throw new Error(e);
+        }
+    }
+
+    @GetMapping("/flight/search")
+    public List<FlightResponse> searchFlights(
+            @RequestParam String from,
+            @RequestParam String to) {
+        try {
+            return service.searchFlights(from, to);
         } catch (Exception e) {
             throw new Error(e);
         }

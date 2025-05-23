@@ -12,30 +12,32 @@ class LoadScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          child,
-          if (isLoading)
-            Positioned.fill(
-              child: Container(
-                color: Colors.white,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Lottie.asset(
-                        Animations.loadingAnimation,
-                      ),
-                      const SizedBox(height: 20),
-                      const Text(
-                        'Loading',
-                        style: TextStyle(
-                            fontSize: 30, fontWeight: FontWeight.w300),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+          if (isLoading) _buildLoadContent(),
+          if (!isLoading) child,
         ],
+      ),
+    );
+  }
+
+  Positioned _buildLoadContent() {
+    return Positioned.fill(
+      child: Container(
+        color: Colors.white,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Lottie.asset(
+                Animations.loadingAnimation,
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Loading',
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.w300),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

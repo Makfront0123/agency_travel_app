@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_agency_front/features/auth/presentation/widgets/auth_button.dart';
 import 'package:travel_agency_front/features/auth/services/storage_services.dart';
+import 'package:travel_agency_front/features/home/data/models/airport_model.dart';
 import 'package:travel_agency_front/features/home/presentation/blocs/home_bloc.dart';
 import 'package:travel_agency_front/features/home/presentation/blocs/home_event.dart';
 import 'package:travel_agency_front/features/home/presentation/blocs/home_state.dart';
@@ -17,17 +18,24 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<AirportModel> airports = [];
+  List<String> origins = [];
+  List<String> destinations = [];
+  String? selectedFrom;
+  String? selectedTo;
+
   @override
   void initState() {
     super.initState();
-    _loadAirports();
+    _loadInitialData();
   }
 
-  Future<void> _loadAirports() async {
+  Future<void> _loadInitialData() async {
     final token = await StorageService().getToken();
-
     if (token != null) {
-      context.read<HomeBloc>().add(GetAllAirportsEvent(token: token));
+      final bloc = context.read<HomeBloc>();
+      bloc.add(GetAllAirportsEvent(token: token));
+      bloc.add(LoadFlightCitiesEvent(token: token));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -36,6 +44,25 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
     }
+  }
+
+  void _onSearchFlights() async {
+    final token = await StorageService().getToken();
+    if (token == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Token no disponible")),
+      );
+      return;
+    }
+
+    context.read<HomeBloc>().add(
+          SearchFlightsEvent(
+            from: selectedFrom ?? '',
+            to: selectedTo ?? '',
+            token: token,
+            date: DateTime.now().toString(),
+          ),
+        );
   }
 
   @override
@@ -53,37 +80,71 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         body: SingleChildScrollView(
-          child: BlocConsumer<HomeBloc, HomeState>(
-            listener: (context, state) {},
-            builder: (context, state) {
+          child: BlocListener<HomeBloc, HomeState>(
+            listener: (context, state) {
               if (state is HomeLoaded) {
-                return Column(
-                  children: [
-                    _buildSearchFlights(),
-                    _buildHomeList(state),
-                  ],
+                setState(() => airports = state.airports);
+              } else if (state is LoadFlightCitiesLoaded) {
+                setState(() {
+                  origins = state.origins;
+                  destinations = state.destinations;
+                });
+              } else if (state is HomeError || state is LoadFlightCitiesError) {
+                final message = (state as dynamic).message;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Error: $message")),
                 );
               }
-
-              if (state is HomeError) {
-                print(state.message);
-                return _buildHomeError(state);
-              }
-
-              return _buildHomeLoad();
             },
+            child: Column(
+              children: [
+                _buildSearchFlights(),
+                _buildHomeList(),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Center _buildHomeLoad() => const Center(child: CircularProgressIndicator());
+  Widget _buildSearchFlights() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      child: Column(
+        children: [
+          DropdownItem(
+            title: 'From',
+            items: origins,
+            selectedItem: selectedFrom,
+            onChanged: (value) {
+              setState(() {
+                selectedFrom = value;
+              });
+            },
+          ),
+          const SizedBox(height: 15),
+          DropdownItem(
+            title: 'To',
+            items: destinations,
+            selectedItem: selectedTo,
+            onChanged: (value) {
+              setState(() {
+                selectedTo = value;
+              });
+            },
+          ),
+          const SizedBox(height: 15),
+          AuthButton(
+            onTap: _onSearchFlights,
+            text: 'Search Flights',
+          )
+        ],
+      ),
+    );
+  }
 
-  Center _buildHomeError(HomeError state) =>
-      Center(child: Text('Error: ${state.message}'));
-
-  Widget _buildHomeList(HomeLoaded state) {
+  Widget _buildHomeList() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 60),
       child: Column(
@@ -98,9 +159,9 @@ class _HomeScreenState extends State<HomeScreen> {
             separatorBuilder: (context, index) => const SizedBox(height: 20),
             scrollDirection: Axis.vertical,
             shrinkWrap: true,
-            itemCount: state.airports.length,
+            itemCount: airports.length,
             itemBuilder: (context, index) {
-              return _buildListCard(state, index);
+              return _buildListCard(index);
             },
           ),
         ],
@@ -108,24 +169,25 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildListCard(HomeLoaded state, int index) {
+  Widget _buildListCard(int index) {
+    final airport = airports[index];
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                    blurRadius: 10,
-                    color: Colors.black.withOpacity(0.3),
-                    offset: const Offset(0, 10))
-              ]),
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                blurRadius: 10,
+                color: Colors.black.withOpacity(0.3),
+                offset: const Offset(0, 10),
+              )
+            ],
+          ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: Image.network(
-              state.airports[index].image ?? '',
+              airport.image ?? '',
               fit: BoxFit.cover,
               height: 100,
             ),
@@ -136,33 +198,13 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '${state.airports[index].city}, ${state.airports[index].country}',
+              '${airport.city}, ${airport.country}',
               style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
             ),
-            Text('\$${state.airports[index].cheapestFlightPrice}'),
+            Text('\$${airport.cheapestFlightPrice}'),
           ],
         ),
       ],
-    );
-  }
-
-  Widget _buildSearchFlights() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      child: Column(
-        children: [
-          const DropdownItem(),
-          const SizedBox(height: 15),
-          const DropdownItem(),
-          const SizedBox(height: 15),
-          const DropdownItem(),
-          const SizedBox(height: 30),
-          AuthButton(
-            onTap: () {},
-            text: 'Search Flights',
-          )
-        ],
-      ),
     );
   }
 }

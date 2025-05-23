@@ -44,18 +44,31 @@ public class AuthControlller {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not verified");
             }
 
-         
-
             final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
-            final String token = jwtUtil.generateToken(userDetails);
-            String role = userService.getUserRole(request.getEmail());
 
+            // Verificar si ya existe un token válido
+            String existingToken = activeSessionService.getToken(request.getEmail());
+
+            if (existingToken != null && !jwtUtil.isTokenExpired(existingToken)) {
+                return new AuthResponse(
+                        request.getEmail(),
+                        userService.getUserRole(request.getEmail()),
+                        existingToken,
+                        user.isVerified());
+            }
+
+            // Si no hay token o está expirado, genera uno nuevo
+            final String token = jwtUtil.generateToken(userDetails);
             activeSessionService.createSession(request.getEmail(), token);
 
-            return new AuthResponse(request.getEmail(), role, token, user.isVerified());
+            return new AuthResponse(
+                    request.getEmail(),
+                    userService.getUserRole(request.getEmail()),
+                    token,
+                    user.isVerified());
 
         } catch (ResponseStatusException e) {
-            throw e;  
+            throw e;
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error", e);
         }

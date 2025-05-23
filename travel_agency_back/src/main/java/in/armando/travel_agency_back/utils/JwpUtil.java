@@ -1,21 +1,19 @@
 package in.armando.travel_agency_back.utils;
 
+import io.jsonwebtoken.*;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+
+import in.armando.travel_agency_back.service.ActiveSessionService;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
-
-import in.armando.travel_agency_back.service.ActiveSessionService;
-import io.jsonwebtoken.Claims;
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-
 @Component
 public class JwpUtil {
+
     private final String SECRET_KEY = "thiismySecretKey";
     private ActiveSessionService activeSessionService;
 
@@ -26,7 +24,8 @@ public class JwpUtil {
 
     private String createToken(Map<String, Object> claims, String subject) {
         long now = System.currentTimeMillis();
-        long expirationTime = 1000 * 60 * 60 * 10;
+      long expirationTime = 1000 * 60 * 10; // 10 minutos
+
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -53,29 +52,49 @@ public class JwpUtil {
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
+        try {
+            final Claims claims = extractAllClaims(token);
+            return claimsResolver.apply(claims);
+        } catch (ExpiredJwtException e) {
+            return claimsResolver.apply(e.getClaims()); // permite extraer claims aún expirado
+        }
     }
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(token)
-
                 .getBody();
     }
 
     public boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+        try {
+            final Date expiration = extractExpiration(token);
+            return expiration == null || expiration.before(new Date());
+        } catch (ExpiredJwtException e) {
+            System.out.println("Token expirado: " + e.getMessage());
+            return true;
+        } catch (Exception e) {
+            System.out.println("Error verificando expiración del token: " + e.getMessage());
+            return true;
+        }
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        try {
+            final String username = extractUsername(token);
+            return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public String extractToken(String email) {
         return activeSessionService.getToken(email);
     }
 
+    // Setter opcional si quieres inyectar el servicio después (por ejemplo en tests)
+    public void setActiveSessionService(ActiveSessionService activeSessionService) {
+        this.activeSessionService = activeSessionService;
+    }
 }

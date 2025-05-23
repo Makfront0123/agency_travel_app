@@ -18,6 +18,8 @@ import 'package:travel_agency_front/features/auth/services/storage_services.dart
 import 'package:travel_agency_front/features/home/data/datasources/home_api_services.dart';
 import 'package:travel_agency_front/features/home/data/repository/home_repository_impl.dart';
 import 'package:travel_agency_front/features/home/domain/usecases/get_all_airports.dart';
+import 'package:travel_agency_front/features/home/domain/usecases/load_flight_cities.dart';
+import 'package:travel_agency_front/features/home/domain/usecases/search_flights.dart';
 import 'package:travel_agency_front/features/home/presentation/blocs/home_bloc.dart';
 
 class AppProvider {
@@ -90,10 +92,20 @@ class AppProvider {
           create: (context) =>
               GetAllAirportsUsecase(context.read<HomeRepositoryImpl>()),
         ),
+        RepositoryProvider(
+          create: (context) =>
+              SearchFlightsUsecase(context.read<HomeRepositoryImpl>()),
+        ),
+        RepositoryProvider(
+          create: (context) =>
+              LoadFlightCitiesUsecase(context.read<HomeApiService>()),
+        ),
 
         BlocProvider(
           create: (context) => HomeBloc(
             getAllAirportsUsecase: context.read<GetAllAirportsUsecase>(),
+            searchFlightsUsecase: context.read<SearchFlightsUsecase>(),
+            loadFlightCitiesUsecase: context.read<LoadFlightCitiesUsecase>(),
           ),
         ),
       ];

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:travel_agency_front/features/home/data/models/airport_model.dart';
+import 'package:travel_agency_front/features/home/data/models/flight_option_model.dart';
 
 class HomeApiService {
   final Dio _dio;
@@ -16,7 +17,43 @@ class HomeApiService {
       ),
     );
 
-    final List<dynamic> data = response.data; // ✅ ya es la lista directamente
+    final List<dynamic> data = response.data;
     return data.map((json) => AirportModel.fromJson(json)).toList();
+  }
+
+  Future<List<AirportModel>> searchFlights(
+      String from, String to, String date, String token) async {
+    try {
+      final response = await _dio.get(
+        '$baseUrl/flight/search',
+        queryParameters: {
+          'from': from,
+          'to': to,
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      final List<dynamic> data = response.data;
+      return data.map((json) => AirportModel.fromJson(json)).toList();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<FlightOptionsModel> loadFlightCities(String token) async {
+    final response = await _dio.get(
+      '$baseUrl/flight/search/options',
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      ),
+    );
+
+    return FlightOptionsModel.fromJson(response.data);
   }
 }

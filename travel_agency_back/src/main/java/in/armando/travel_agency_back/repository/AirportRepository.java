@@ -13,6 +13,7 @@ import in.armando.travel_agency_back.entity.AirportEntity;
 public interface AirportRepository extends JpaRepository<AirportEntity, Long> {
     Optional<AirportEntity> findByAirportId(String airportId);
     Optional<AirportEntity> deleteByAirportId(String airportId);
+ 
 
      @Query(value = """
         SELECT 

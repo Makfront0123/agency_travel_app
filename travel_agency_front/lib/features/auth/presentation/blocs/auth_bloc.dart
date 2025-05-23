@@ -61,6 +61,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future<void> _onAppStarted(AppStarted event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+    await Future.delayed(const Duration(seconds: 7));
+
     final token = await _storageService.getToken();
 
     if (token == null) {
@@ -68,7 +71,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       return;
     }
     try {
-      final user = await _loginUser.autoLoginWithToken(token); // Usa token
+      final user = await _loginUser.autoLoginWithToken(token);
       emit(Authenticated(user: user));
     } catch (e) {
       await _storageService.clearToken();
