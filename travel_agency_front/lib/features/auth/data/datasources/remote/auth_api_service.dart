@@ -61,6 +61,9 @@ class AuthApiService {
 
       return UserModel.fromJson(data['data'], token: token);
     } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        throw SessionExpiredException('Session expired. Please login again.');
+      }
       final message = _extractErrorMessage(e);
       return Future.error(message);
     } catch (e) {
@@ -194,8 +197,10 @@ class AuthApiService {
   }
 }
 
+class SessionExpiredException implements Exception {
+  final String message;
+  SessionExpiredException(this.message);
 
-/*
- eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiQGdtYWlsLmNvbSIsImV4cCI6MTc0Nzg4MDM3MSwiaWF0IjoxNzQ3ODQ0MzcxfQ.cHqftpqoX2_dN9N7FjbC85tK6Kd8ZeuBHW28sosqDH8
-
- */
+  @override
+  String toString() => message;
+}

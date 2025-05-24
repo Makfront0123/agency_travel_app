@@ -37,9 +37,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       SearchFlightsEvent event, Emitter<HomeState> emit) async {
     emit(SearchFlightsLoading());
     try {
-      final airports = await _searchFlightsUsecase(
+      final flights = await _searchFlightsUsecase(
           event.from, event.to, event.date, event.token);
-      emit(SearchFlightsLoaded(airports));
+      emit(SearchFlightsLoaded(flights));
     } catch (e) {
       emit(SearchFlightsError(e.toString()));
     }

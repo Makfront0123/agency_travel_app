@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,37 +32,29 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _loadInitialData() async {
     final token = await StorageService().getToken();
+
     if (token != null) {
       final bloc = context.read<HomeBloc>();
       bloc.add(GetAllAirportsEvent(token: token));
       bloc.add(LoadFlightCitiesEvent(token: token));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("No hay sesión iniciada"),
-          backgroundColor: Colors.red,
-        ),
-      );
     }
   }
 
   void _onSearchFlights() async {
     final token = await StorageService().getToken();
-    if (token == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Token no disponible")),
-      );
-      return;
-    }
 
-    context.read<HomeBloc>().add(
-          SearchFlightsEvent(
-            from: selectedFrom ?? '',
-            to: selectedTo ?? '',
-            token: token,
-            date: DateTime.now().toString(),
-          ),
-        );
+    if (token != null) {
+      context.read<HomeBloc>().add(
+            SearchFlightsEvent(
+              from: selectedFrom ?? '',
+              to: selectedTo ?? '',
+              token: token,
+              date: DateTime.now().toString(),
+            ),
+          );
+
+      Navigator.pushNamed(context, '/flightResults');
+    }
   }
 
   @override
@@ -91,9 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 });
               } else if (state is HomeError || state is LoadFlightCitiesError) {
                 final message = (state as dynamic).message;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Error: $message")),
-                );
+                print('Error: $message');
               }
             },
             child: Column(

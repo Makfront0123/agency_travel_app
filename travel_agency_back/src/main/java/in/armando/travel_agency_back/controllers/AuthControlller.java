@@ -46,7 +46,7 @@ public class AuthControlller {
 
             final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
 
-            // Verificar si ya existe un token válido
+       
             String existingToken = activeSessionService.getToken(request.getEmail());
 
             if (existingToken != null && !jwtUtil.isTokenExpired(existingToken)) {
@@ -56,8 +56,7 @@ public class AuthControlller {
                         existingToken,
                         user.isVerified());
             }
-
-            // Si no hay token o está expirado, genera uno nuevo
+ 
             final String token = jwtUtil.generateToken(userDetails);
             activeSessionService.createSession(request.getEmail(), token);
 

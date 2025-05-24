@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import in.armando.travel_agency_back.entity.AirportEntity;
 import in.armando.travel_agency_back.entity.FlightEntity;
 import in.armando.travel_agency_back.io.FlightOptionsResponse;
-
 import in.armando.travel_agency_back.io.FlightRequest;
 import in.armando.travel_agency_back.io.FlightResponse;
 import in.armando.travel_agency_back.repository.AirportRepository;
@@ -74,8 +73,8 @@ public class FlightServiceImpl implements FlightService {
                                 .flightNumber(entity.getFlightNumber())
                                 .seatsAvailable(entity.getSeatsAvailable())
                                 .price(entity.getPrice())
-                                .destinationId(entity.getDestination().getId())
-                                .originId(entity.getOrigin().getId())
+                                .destinationId(entity.getDestination().getCity()+ ", " + entity.getDestination().getCountry())
+                                .originId(entity.getOrigin().getCity()+ ", " + entity.getOrigin().getCountry())
                                 .dateInitial(entity.getDateInitial())
                                 .dateFinal(entity.getDateFinal())
                                 .createdAt(entity.getCreatedAt())

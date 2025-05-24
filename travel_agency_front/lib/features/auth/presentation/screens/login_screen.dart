@@ -102,6 +102,7 @@ class LoginScreen extends StatelessWidget {
           const SizedBox(height: 20),
           AuthFormfield(
             controller: passwordController,
+            obscureText: true,
             label: 'Password',
             validator: (value) {
               if (value == null || value.isEmpty) {

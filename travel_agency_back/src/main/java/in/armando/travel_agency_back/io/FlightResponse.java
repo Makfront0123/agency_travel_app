@@ -14,8 +14,8 @@ public class FlightResponse {
     private Integer flightNumber;
     private Integer seatsAvailable;
     private double price;
-    private Long destinationId;  
-    private Long originId; 
+    private String destinationId;  
+    private String originId;
     private LocalDateTime dateInitial;
     private LocalDateTime dateFinal;
     private LocalDateTime createdAt;

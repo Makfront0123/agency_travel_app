@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:travel_agency_front/features/home/data/models/airport_model.dart';
+import 'package:travel_agency_front/features/home/data/models/flight_model.dart';
 import 'package:travel_agency_front/features/home/data/models/flight_option_model.dart';
 
 class HomeApiService {
@@ -21,7 +22,7 @@ class HomeApiService {
     return data.map((json) => AirportModel.fromJson(json)).toList();
   }
 
-  Future<List<AirportModel>> searchFlights(
+  Future<List<FlightModel>> searchFlights(
       String from, String to, String date, String token) async {
     try {
       final response = await _dio.get(
@@ -38,7 +39,7 @@ class HomeApiService {
       );
 
       final List<dynamic> data = response.data;
-      return data.map((json) => AirportModel.fromJson(json)).toList();
+      return data.map((json) => FlightModel.fromJson(json)).toList();
     } catch (e) {
       rethrow;
     }

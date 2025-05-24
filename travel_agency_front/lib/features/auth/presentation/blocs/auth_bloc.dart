@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travel_agency_front/features/auth/data/datasources/remote/auth_api_service.dart';
 import 'package:travel_agency_front/features/auth/domain/usecases/forgot_auth.dart';
 import 'package:travel_agency_front/features/auth/domain/usecases/login_auth.dart';
 import 'package:travel_agency_front/features/auth/domain/usecases/logout_auth.dart';
@@ -70,11 +71,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthUnauthenticated());
       return;
     }
+
     try {
       final user = await _loginUser.autoLoginWithToken(token);
       emit(Authenticated(user: user));
+    } on SessionExpiredException catch (_) {
+      add(const LogoutEvent()); // Maneja token expirado
     } catch (e) {
-      await _storageService.clearToken();
+      await _storageService.clearToken(); // Otras excepciones
       emit(AuthUnauthenticated());
     }
   }

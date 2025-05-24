@@ -7,6 +7,8 @@ import 'package:travel_agency_front/features/auth/presentation/screens/reset_scr
 import 'package:travel_agency_front/features/auth/presentation/screens/verify_forgot_screen.dart';
 import 'package:travel_agency_front/features/auth/presentation/screens/verify_otp_screen.dart';
 import 'package:travel_agency_front/features/auth/presentation/widgets/auth_wrapper.dart';
+import 'package:travel_agency_front/features/flight/presentation/screens/flight_details_screen.dart';
+import 'package:travel_agency_front/features/flight/presentation/screens/flight_result_screen.dart';
 import 'package:travel_agency_front/features/home/presentation/screen/home_screen.dart';
 
 class AppRouter {
@@ -20,10 +22,14 @@ class AppRouter {
   static const String verifyRoute = '/verify';
   static const String verifyForgotRoute = '/verifyForgot';
   static const String resetRoute = '/reset';
+  static const String flightResultsRoute = '/flightResults';
+  static const String flightDetailsRoute = '/flightDetails';
 
   static Map<String, WidgetBuilder> get routes {
     return {
       initialRoute: (context) => const HomeScreen(),
+      flightResultsRoute: (context) => const FlightResultScreen(),
+      flightDetailsRoute: (context) => const FlightDetailsScreen(),
       homeRoute: (context) => const HomeScreen(),
       loginRoute: (context) => const LoginScreen(),
       resetRoute: (context) => const ResetScreen(),

@@ -133,9 +133,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String logout(String token) {
-        String email = jwtUtil.extractUsername(token); // O tu método equivalente para obtener el email
+        String email = jwtUtil.extractUsername(token); 
         tokenBlacklistService.blacklistToken(token);
-        activeSessionService.removeSession(email); // ⬅️ Elimina la sesión activa
+        activeSessionService.removeSession(email); 
         return "Logout successful";
     }
 
@@ -203,7 +203,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String logoutByEmail(String email) {
-        String token = jwtUtil.extractToken(email); // ← se recupera de memoria
+        String token = jwtUtil.extractToken(email);  
         if (token == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No active session for this user.");
         }

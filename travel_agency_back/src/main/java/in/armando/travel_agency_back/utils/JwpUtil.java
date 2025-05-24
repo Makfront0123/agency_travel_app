@@ -1,15 +1,18 @@
 package in.armando.travel_agency_back.utils;
 
-import io.jsonwebtoken.*;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
-
-import in.armando.travel_agency_back.service.ActiveSessionService;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+
+import in.armando.travel_agency_back.service.ActiveSessionService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
 public class JwpUtil {
@@ -56,7 +59,7 @@ public class JwpUtil {
             final Claims claims = extractAllClaims(token);
             return claimsResolver.apply(claims);
         } catch (ExpiredJwtException e) {
-            return claimsResolver.apply(e.getClaims()); // permite extraer claims aún expirado
+            return claimsResolver.apply(e.getClaims());  
         }
     }
 
@@ -93,8 +96,5 @@ public class JwpUtil {
         return activeSessionService.getToken(email);
     }
 
-    // Setter opcional si quieres inyectar el servicio después (por ejemplo en tests)
-    public void setActiveSessionService(ActiveSessionService activeSessionService) {
-        this.activeSessionService = activeSessionService;
-    }
+  
 }

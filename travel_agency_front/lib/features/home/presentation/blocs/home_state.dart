@@ -1,4 +1,5 @@
 import 'package:travel_agency_front/features/home/data/models/airport_model.dart';
+import 'package:travel_agency_front/features/home/data/models/flight_model.dart';
 
 class HomeState {}
 
@@ -21,9 +22,9 @@ class HomeInitial extends HomeState {}
 class SearchFlightsLoading extends HomeState {}
 
 class SearchFlightsLoaded extends HomeState {
-  final List<AirportModel> airports;
+  final List<FlightModel> flights;
 
-  SearchFlightsLoaded(this.airports);
+  SearchFlightsLoaded(this.flights);
 }
 
 class SearchFlightsError extends HomeState {
