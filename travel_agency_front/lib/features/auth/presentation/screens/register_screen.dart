@@ -56,10 +56,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
         return LoadScreen(
             isLoading: isLoading,
             child: Scaffold(
-              body: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 80, horizontal: 30),
-                child: _buildRegister(context),
+              body: SingleChildScrollView(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 80, horizontal: 30),
+                  child: _buildRegister(context),
+                ),
               ),
             ));
       },
@@ -77,7 +79,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         const SizedBox(height: 50),
         _buildForm(emailController, nameController, lastNameController,
             passwordController, confirmPasswordController),
-        const Spacer(),
+        const SizedBox(height: 40),
         TextButtonWrapper(
           title: 'Don\'t have an account?',
           nameButton: 'Sign up',

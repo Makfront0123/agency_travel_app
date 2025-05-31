@@ -49,26 +49,29 @@ class LoginScreen extends StatelessWidget {
         return LoadScreen(
           isLoading: isLoading,
           child: Scaffold(
-            body: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 30),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Sign in',
-                    style:
-                        TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
-                  ),
-                  const SizedBox(height: 50),
-                  _buildForm(emailController, passwordController, formKey,
-                      context, onLogin),
-                  const Spacer(),
-                  TextButtonWrapper(
-                    title: 'Don\'t have an account?',
-                    nameButton: 'Sign up',
-                    onTap: () => Navigator.pushNamed(context, '/register'),
-                  ),
-                ],
+            body: SingleChildScrollView(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 80, horizontal: 30),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Sign in',
+                      style: TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.normal),
+                    ),
+                    const SizedBox(height: 50),
+                    _buildForm(emailController, passwordController, formKey,
+                        context, onLogin),
+                    const SizedBox(height: 40),
+                    TextButtonWrapper(
+                      title: 'Don\'t have an account?',
+                      nameButton: 'Sign up',
+                      onTap: () => Navigator.pushNamed(context, '/register'),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
