@@ -154,7 +154,7 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
         paymentDate: DateTime.now().toIso8601String(),
         status: "PAID",
         amount: price,
-        paymentMode: "PayPal", // 👈 corregido aquí
+        paymentMode: "PayPal",
         reservationId: event.reservation.reservationId,
       );
 

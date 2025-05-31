@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously, avoid_print
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_agency_front/features/auth/domain/entities/user.dart';
@@ -20,28 +21,46 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   List<AirportModel> airports = [];
   List<String> origins = [];
   List<String> destinations = [];
   String? selectedFrom;
   String? selectedTo;
 
+  late final AnimationController _controller;
+  late final Animation<Offset> _offsetAnimation;
+
   @override
   void initState() {
     super.initState();
     _loadInitialData();
+    _loadAnimation();
   }
 
   Future<void> _loadInitialData() async {
     final token = await StorageService().getToken();
-    print('token: $token');
 
     if (token != null) {
       final bloc = context.read<HomeBloc>();
       bloc.add(GetAllAirportsEvent(token: token));
       bloc.add(LoadFlightCitiesEvent(token: token));
     }
+  }
+
+  void _loadAnimation() {
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+
+    _offsetAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.3),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    );
   }
 
   void _onSearchFlights() async {
@@ -91,6 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
           listener: (context, state) {
             if (state is HomeLoaded) {
               setState(() => airports = state.airports);
+              _controller.forward();
             } else if (state is LoadFlightCitiesLoaded) {
               setState(() {
                 origins = state.origins;
@@ -104,7 +124,11 @@ class _HomeScreenState extends State<HomeScreen> {
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             children: [
-              _buildSearchFlights(),
+              AnimatedOpacity(
+                opacity: airports.isEmpty ? 0 : 1,
+                duration: const Duration(milliseconds: 1200),
+                child: _buildSearchFlights(),
+              ),
               const SizedBox(height: 20),
               const Text(
                 'Popular Destinations',
@@ -188,46 +212,55 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildListCard(int index) {
     final airport = airports[index];
-    return Row(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 10,
-                color: Colors.black.withOpacity(0.3),
-                offset: const Offset(0, 10),
-              )
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.network(
-              airport.image ??
-                  'https://cdn.wallpapersafari.com/88/24/sAfEUB.jpeg',
-              fit: BoxFit.cover,
-              height: 150,
-              width: 150,
-            ),
-          ),
-        ),
-        const SizedBox(width: 20),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '${airport.city}, ${airport.country}',
-                style:
-                    const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-                overflow: TextOverflow.ellipsis,
+    return SlideTransition(
+      position: _offsetAnimation,
+      child: FadeTransition(
+        opacity: _controller,
+        child: Row(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    blurRadius: 10,
+                    color: Colors.black.withOpacity(0.3),
+                    offset: const Offset(0, 10),
+                  )
+                ],
               ),
-              Text('\$${airport.cheapestFlightPrice}'),
-            ],
-          ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: CachedNetworkImage(
+                  imageUrl: airport.image ??
+                      'https://cdn.wallpapersafari.com/88/24/sAfEUB.jpeg',
+                  fit: BoxFit.cover,
+                  height: 150,
+                  width: 150,
+                  placeholder: (context, url) =>
+                      const Center(child: CircularProgressIndicator()),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                ),
+              ),
+            ),
+            const SizedBox(width: 20),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${airport.city}, ${airport.country}',
+                    style: const TextStyle(
+                        fontSize: 17, fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text('\$${airport.cheapestFlightPrice}'),
+                ],
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

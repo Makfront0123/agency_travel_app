@@ -76,9 +76,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final user = await _loginUser.autoLoginWithToken(token);
       emit(Authenticated(user: user));
     } on SessionExpiredException catch (_) {
-      add(const LogoutEvent()); // Maneja token expirado
+      add(const LogoutEvent());
     } catch (e) {
-      await _storageService.clearToken(); // Otras excepciones
+      await _storageService.clearToken();
       emit(AuthUnauthenticated());
     }
   }
