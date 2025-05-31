@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travel_agency_front/features/auth/presentation/blocs/auth_bloc.dart';
+import 'package:travel_agency_front/features/auth/presentation/blocs/auth_state.dart';
 import 'package:travel_agency_front/features/auth/presentation/widgets/auth_button.dart';
 import 'package:travel_agency_front/features/auth/services/storage_services.dart';
 import 'package:travel_agency_front/features/home/data/models/airport_model.dart';
@@ -60,11 +62,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final user = context.select<AuthBloc, dynamic>((bloc) {
+      final state = bloc.state;
+      if (state is Authenticated) {
+        return state.user;
+      }
+      return null;
+    });
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: Scaffold(
         appBar: AppBar(
-          leading: const Icon(Icons.search),
+          backgroundColor: Colors.transparent,
+          automaticallyImplyLeading: false,
+          title: user != null
+              ? Text('Welcome, ${user.name}')
+              : const Text('Welcome'),
           actions: [
             IconButton(
               onPressed: () {},

@@ -41,43 +41,4 @@ class UserModel extends User {
             ? DateTime.tryParse(json['resetPasswordExpires'])
             : null,
       );
-
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'lastName': lastName,
-        'email': email,
-        'imageUser': imageUser,
-        'accountVerified': accountVerified,
-        'otp': otp,
-        'role': role,
-        'token': token,
-        'otpExpires': otpExpires?.toIso8601String(),
-        'resetPasswordToken': resetPasswordToken,
-        'resetPasswordExpires': resetPasswordExpires?.toIso8601String(),
-      };
-
-  User toEntity() {
-    return User(
-      id: id,
-      name: name,
-      lastName: lastName,
-      email: email,
-      imageUser: imageUser,
-      accountVerified: accountVerified,
-      role: role,
-      token: token,
-    );
-  }
-
-  @override
-  List<Object?> get props =>
-      super.props +
-      [
-        otp,
-        otpExpires,
-        resetPasswordToken,
-        token,
-        resetPasswordExpires,
-      ];
 }
