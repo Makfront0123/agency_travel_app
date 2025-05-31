@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travel_agency_front/features/auth/domain/entities/user.dart';
 import 'package:travel_agency_front/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:travel_agency_front/features/auth/presentation/blocs/auth_state.dart';
 import 'package:travel_agency_front/features/auth/presentation/widgets/auth_button.dart';
@@ -62,13 +63,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.select<AuthBloc, dynamic>((bloc) {
+    final user = context.select<AuthBloc, User?>((bloc) {
       final state = bloc.state;
       if (state is Authenticated) {
         return state.user;
       }
       return null;
     });
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: Scaffold(
@@ -205,20 +207,25 @@ class _HomeScreenState extends State<HomeScreen> {
               airport.image ??
                   'https://cdn.wallpapersafari.com/88/24/sAfEUB.jpeg',
               fit: BoxFit.cover,
-              height: 100,
+              height: 150,
+              width: 150,
             ),
           ),
         ),
         const SizedBox(width: 20),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '${airport.city}, ${airport.country}',
-              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-            ),
-            Text('\$${airport.cheapestFlightPrice}'),
-          ],
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${airport.city}, ${airport.country}',
+                style:
+                    const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                overflow: TextOverflow.ellipsis,
+              ),
+              Text('\$${airport.cheapestFlightPrice}'),
+            ],
+          ),
         ),
       ],
     );
