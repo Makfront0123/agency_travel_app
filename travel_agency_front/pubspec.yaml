@@ -1,0 +1,33 @@
+name: travel_agency_front
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.5.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+    
+  flutter_bloc: ^9.1.0
+  equatable: ^2.0.7
+  dio: ^5.8.0+1
+  shared_preferences: ^2.5.3
+  lottie: ^3.2.0
+  intl: ^0.20.2
+  flutter_stripe: 9.4.0
+  flutter_paypal_payment: ^1.0.8
+  flutter_dotenv: ^5.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/
+    - .env

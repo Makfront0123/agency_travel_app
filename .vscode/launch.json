@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-TravelAgencyBackApplication<travel_agency_back>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "in.armando.travel_agency_back.TravelAgencyBackApplication",
+            "projectName": "travel_agency_back",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
