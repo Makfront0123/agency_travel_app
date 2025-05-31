@@ -42,4 +42,9 @@ class PaymentRepositoryImpl implements PaymentRepository {
   Future<Payment> addPayment(Payment payment, String token) async {
     return paymentRepository.registerPayment(payment, token);
   }
+
+  @override
+  Future<List<Payment>> getUserPayments(String token) {
+    return paymentRepository.getPaymentUser(token);
+  }
 }

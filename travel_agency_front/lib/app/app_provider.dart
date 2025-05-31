@@ -26,6 +26,8 @@ import 'package:travel_agency_front/features/payment/data/datasources/paypal_api
 import 'package:travel_agency_front/features/payment/data/datasources/stripe_api_service.dart';
 import 'package:travel_agency_front/features/payment/data/repository/payment_repository_impl.dart';
 import 'package:travel_agency_front/features/payment/domain/repository/payment_repository.dart';
+import 'package:travel_agency_front/features/payment/domain/usecase/get_payment_user.dart';
+import 'package:travel_agency_front/features/payment/presentation/blocs/payment_bloc.dart';
 import 'package:travel_agency_front/features/reservation/data/datasources/reservation_api_services.dart';
 import 'package:travel_agency_front/features/reservation/data/repository/reservation_repository_impl.dart';
 import 'package:travel_agency_front/features/reservation/domain/usecase/get_reservation.dart';
@@ -135,6 +137,16 @@ class AppProvider {
             context.read<StripePaymentApiService>(),
             context.read<PaypalPaymentApiService>(),
             context.read<PaymentApiService>(),
+          ),
+        ),
+
+        RepositoryProvider(
+          create: (context) =>
+              GetPaymentUserUsecase(context.read<PaymentRepository>()),
+        ),
+        BlocProvider(
+          create: (context) => PaymentBloc(
+            getPaymentUserUsecase: context.read<GetPaymentUserUsecase>(),
           ),
         ),
 

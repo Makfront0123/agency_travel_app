@@ -10,4 +10,6 @@ abstract class PaymentRepository {
   );
 
   Future<void> addPayment(Payment payment, String token);
+
+  Future<List<Payment>> getUserPayments(String token);
 }

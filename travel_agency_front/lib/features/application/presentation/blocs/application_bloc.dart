@@ -3,6 +3,7 @@ import 'package:travel_agency_front/features/application/presentation/blocs/appl
 import 'package:travel_agency_front/features/application/presentation/blocs/application_state.dart';
 import 'package:travel_agency_front/features/home/presentation/screen/home_screen.dart';
 import 'package:travel_agency_front/features/home/presentation/screen/search_screen.dart';
+import 'package:travel_agency_front/features/payment/presentation/screen/payment_get.dart';
 import 'package:travel_agency_front/features/profile/presentation/screen/profile_screen.dart';
 
 class ApplicationBloc extends Bloc<ApplicationEvent, ApplicationState> {
@@ -13,7 +14,7 @@ class ApplicationBloc extends Bloc<ApplicationEvent, ApplicationState> {
             pages: [
               HomeScreen(),
               SearchScreen(),
-              HomeScreen(),
+              PaymentGet(),
               ProfileScreen(),
             ],
           ),

@@ -11,6 +11,7 @@ import 'package:travel_agency_front/features/flight/presentation/screens/flight_
 import 'package:travel_agency_front/features/flight/presentation/screens/flight_result_screen.dart';
 import 'package:travel_agency_front/features/home/presentation/screen/home_screen.dart';
 import 'package:travel_agency_front/features/home/presentation/screen/search_screen.dart';
+import 'package:travel_agency_front/features/payment/presentation/screen/payment_get.dart';
 import 'package:travel_agency_front/features/payment/presentation/screen/payment_screen.dart';
 import 'package:travel_agency_front/features/payment/presentation/screen/payment_success.dart';
 import 'package:travel_agency_front/features/reservation/presentation/screen/reservation_confirm.dart';
@@ -34,11 +35,13 @@ class AppRouter {
   static const String paymentSuccessRoute = '/paymentSuccess';
   static const String searchRoute = '/search';
   static const String reservationConfirmRoute = '/reservationConfirm';
+  static const String paymentGetRoute = '/paymentGet';
 
   static Map<String, WidgetBuilder> get routes {
     return {
       initialRoute: (context) => const HomeScreen(),
       flightResultsRoute: (context) => const FlightResultScreen(),
+      paymentGetRoute: (context) => const PaymentGet(),
       flightDetailsRoute: (context) => const FlightDetailsScreen(),
       searchRoute: (context) => const SearchScreen(),
       paymentSuccessRoute: (context) => const PaymentSuccess(),

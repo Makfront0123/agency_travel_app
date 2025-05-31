@@ -17,4 +17,14 @@ class PaymentApiService {
 
     return PaymentModel.fromJson(response.data);
   }
+
+  Future<List<Payment>> getPaymentUser(String token) async {
+    final response = await _dio.get('$baseUrl/payment/user',
+        options: Options(headers: {
+          'Authorization': 'Bearer $token',
+        }));
+
+    final List<dynamic> data = response.data;
+    return data.map((json) => PaymentModel.fromJson(json)).toList();
+  }
 }
