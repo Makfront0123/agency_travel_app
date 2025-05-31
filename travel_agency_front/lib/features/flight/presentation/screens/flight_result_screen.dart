@@ -82,29 +82,32 @@ class _FlightResultScreenState extends State<FlightResultScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  state.flights[index].airline,
-                  style: const TextStyle(fontSize: 23, color: Colors.black),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  DateFormatter.formatTime(state.flights[index].dateInitial),
-                  style: const TextStyle(
-                    fontSize: 18,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w200,
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    state.flights[index].airline,
+                    style: const TextStyle(fontSize: 23, color: Colors.black),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-                Text(
-                  DateFormatter.formatDate(state.flights[index].dateInitial),
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w200),
-                )
-              ],
+                  const SizedBox(height: 10),
+                  Text(
+                    DateFormatter.formatTime(state.flights[index].dateInitial),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w200,
+                    ),
+                  ),
+                  Text(
+                    DateFormatter.formatDate(state.flights[index].dateInitial),
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w200),
+                  )
+                ],
+              ),
             ),
             const Icon(Icons.arrow_forward, color: AppColors.primaryColor),
             Padding(

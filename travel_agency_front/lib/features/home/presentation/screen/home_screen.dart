@@ -72,27 +72,37 @@ class _HomeScreenState extends State<HomeScreen> {
             )
           ],
         ),
-        body: SingleChildScrollView(
-          child: BlocListener<HomeBloc, HomeState>(
-            listener: (context, state) {
-              if (state is HomeLoaded) {
-                setState(() => airports = state.airports);
-              } else if (state is LoadFlightCitiesLoaded) {
-                setState(() {
-                  origins = state.origins;
-                  destinations = state.destinations;
-                });
-              } else if (state is HomeError || state is LoadFlightCitiesError) {
-                final message = (state as dynamic).message;
-                print('Error: $message');
-              }
-            },
-            child: Column(
-              children: [
-                _buildSearchFlights(),
-                _buildHomeList(),
-              ],
-            ),
+        body: BlocListener<HomeBloc, HomeState>(
+          listener: (context, state) {
+            if (state is HomeLoaded) {
+              setState(() => airports = state.airports);
+            } else if (state is LoadFlightCitiesLoaded) {
+              setState(() {
+                origins = state.origins;
+                destinations = state.destinations;
+              });
+            } else if (state is HomeError || state is LoadFlightCitiesError) {
+              final message = (state as dynamic).message;
+              print('Error: $message');
+            }
+          },
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            children: [
+              _buildSearchFlights(),
+              const SizedBox(height: 20),
+              const Text(
+                'Popular Destinations',
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.w300),
+              ),
+              const SizedBox(height: 20),
+              ...List.generate(
+                  airports.length,
+                  (index) => Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: _buildListCard(index),
+                      )),
+            ],
           ),
         ),
       ),
@@ -101,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildSearchFlights() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
       child: Column(
         children: [
           DropdownItem(
@@ -136,8 +146,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildHomeList() {
+    print('airports: ${airports.length}');
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 60),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -178,7 +189,8 @@ class _HomeScreenState extends State<HomeScreen> {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: Image.network(
-              airport.image ?? '',
+              airport.image ??
+                  'https://cdn.wallpapersafari.com/88/24/sAfEUB.jpeg',
               fit: BoxFit.cover,
               height: 100,
             ),

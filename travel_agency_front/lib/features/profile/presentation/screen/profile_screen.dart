@@ -20,6 +20,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
       ),
       body: Center(
         child: ElevatedButton(onPressed: _logout, child: const Text('Logout')),
