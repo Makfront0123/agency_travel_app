@@ -81,44 +81,47 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
       },
       builder: (context, state) {
         return Scaffold(
-          body: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 30),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  'Verification',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
-                ),
-                const SizedBox(height: 50),
-                const Text(
-                  'An Authentication code has been sent to (+57) 301 92921',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),
-                ),
-                const SizedBox(height: 90),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: List.generate(4, (index) => _buildOtpBox(index)),
-                ),
-                const SizedBox(height: 30),
-                TextButtonWrapper(
-                  title: 'I didn’t receive code?',
-                  nameButton: 'Resend Code',
-                  onTap: _resendOtp,
-                ),
-                const SizedBox(height: 40),
-                ElevatedButton(
-                  onPressed: _onVerify,
-                  child: const Text("Verify"),
-                ),
-                const Spacer(),
-                TextButtonWrapper(
-                  title: 'Remember Password?',
-                  nameButton: 'Sign in',
-                  onTap: () => Navigator.pushNamed(context, '/login'),
-                ),
-              ],
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 30),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Verification',
+                    style:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
+                  ),
+                  const SizedBox(height: 50),
+                  const Text(
+                    'An Authentication code has been sent to your email account',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),
+                  ),
+                  const SizedBox(height: 90),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: List.generate(4, (index) => _buildOtpBox(index)),
+                  ),
+                  const SizedBox(height: 30),
+                  TextButtonWrapper(
+                    title: 'I didn’t receive code?',
+                    nameButton: 'Resend Code',
+                    onTap: _resendOtp,
+                  ),
+                  const SizedBox(height: 40),
+                  ElevatedButton(
+                    onPressed: _onVerify,
+                    child: const Text("Verify"),
+                  ),
+                  const SizedBox(height: 20),
+                  TextButtonWrapper(
+                    title: 'Remember Password?',
+                    nameButton: 'Sign in',
+                    onTap: () => Navigator.pushNamed(context, '/login'),
+                  ),
+                ],
+              ),
             ),
           ),
         );

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travel_agency_front/app/api_config.dart';
 import 'package:travel_agency_front/features/application/presentation/blocs/application_bloc.dart';
 import 'package:travel_agency_front/features/auth/data/datasources/remote/auth_api_service.dart';
 import 'package:travel_agency_front/features/auth/data/repositories/auth_repository_impl.dart';
@@ -42,7 +43,7 @@ class AppProvider {
         /// Auth
         RepositoryProvider(
           create: (context) =>
-              AuthApiService(context.read<Dio>(), 'http://10.0.2.2:8080'),
+              AuthApiService(context.read<Dio>(), ApiConfig.baseUrl),
         ),
         RepositoryProvider(
           create: (context) =>
@@ -95,7 +96,7 @@ class AppProvider {
         /// Home
         RepositoryProvider(
           create: (context) =>
-              HomeApiService(context.read<Dio>(), 'http://10.0.2.2:8080'),
+              HomeApiService(context.read<Dio>(), ApiConfig.baseUrl),
         ),
         RepositoryProvider(
           create: (context) =>
@@ -130,7 +131,7 @@ class AppProvider {
         ),
         RepositoryProvider(
           create: (context) =>
-              PaymentApiService(context.read<Dio>(), 'http://10.0.2.2:8080'),
+              PaymentApiService(context.read<Dio>(), ApiConfig.baseUrl),
         ),
         RepositoryProvider<PaymentRepository>(
           create: (context) => PaymentRepositoryImpl(
@@ -152,8 +153,8 @@ class AppProvider {
 
         // Reservation AFTER PaymentRepository is available
         RepositoryProvider(
-          create: (context) => ReservationApiService(
-              context.read<Dio>(), 'http://10.0.2.2:8080'),
+          create: (context) =>
+              ReservationApiService(context.read<Dio>(), ApiConfig.baseUrl),
         ),
         RepositoryProvider(
           create: (context) =>

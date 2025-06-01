@@ -63,6 +63,12 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   void _onSearchFlights() async {
     final token = await StorageService().getToken();
 

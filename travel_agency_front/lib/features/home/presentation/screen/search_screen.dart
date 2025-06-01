@@ -25,6 +25,21 @@ class _SearchScreenState extends State<SearchScreen> {
   String? selectedTo;
 
   @override
+  void initState() {
+    super.initState();
+    _loadInitialData();
+  }
+
+  Future<void> _loadInitialData() async {
+    final token = await StorageService().getToken();
+    if (token != null) {
+      final bloc = context.read<HomeBloc>();
+      bloc.add(GetAllAirportsEvent(token: token));
+      bloc.add(LoadFlightCitiesEvent(token: token));
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5),

@@ -64,75 +64,78 @@ class _ReservationScreenState extends State<ReservationScreen> {
             final passengers =
                 state is ReservationSuccess ? state.passengers : [];
 
-            return Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  EntityFormContent(
-                    name: 'Add Passenger',
-                    inputTitle01: 'Name',
-                    inputTitle02: 'Email',
-                    controller02: childController,
-                    controller01: adultController,
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    EntityFormContent(
+                      name: 'Add Passenger',
+                      inputTitle01: 'Name',
+                      inputTitle02: 'Email',
+                      controller02: childController,
+                      controller01: adultController,
                     ),
-                    onPressed: _addPassenger,
-                    child: const Text(
-                      'Add Passenger',
-                      style: TextStyle(color: AppColors.secondaryColor),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Passenger List:',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-                  ...passengers.map(
-                    (p) => ListTile(
-                      title: Text(p.fullName),
-                      subtitle: Text(p.email),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () {
-                          context
-                              .read<ReservationBloc>()
-                              .add(RemovePassenger(p));
-                        },
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryColor,
+                      ),
+                      onPressed: _addPassenger,
+                      child: const Text(
+                        'Add Passenger',
+                        style: TextStyle(color: AppColors.secondaryColor),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 30),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/payment');
-                    },
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Payment Method',
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(width: 10),
-                        Icon(
-                          Icons.arrow_forward,
-                          color: AppColors.primaryColor,
-                        )
-                      ],
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Passenger List:',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
-                  ),
-                  const Spacer(),
-                  AuthButton(
-                    text: 'Continue',
-                    onTap: _addReservation,
-                  )
-                ],
+                    const SizedBox(height: 10),
+                    ...passengers.map(
+                      (p) => ListTile(
+                        title: Text(p.fullName),
+                        subtitle: Text(p.email),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () {
+                            context
+                                .read<ReservationBloc>()
+                                .add(RemovePassenger(p));
+                          },
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/payment');
+                      },
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Payment Method',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(width: 10),
+                          Icon(
+                            Icons.arrow_forward,
+                            color: AppColors.primaryColor,
+                          )
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    AuthButton(
+                      text: 'Continue',
+                      onTap: _addReservation,
+                    )
+                  ],
+                ),
               ),
             );
           }),
