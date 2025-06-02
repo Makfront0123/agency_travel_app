@@ -1,5 +1,6 @@
 package in.armando.travel_agency_back.controllers;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -17,12 +18,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import in.armando.travel_agency_back.entity.UserEntity;
 import in.armando.travel_agency_back.io.AuthRequest;
-import in.armando.travel_agency_back.io.AuthResponse;
 import in.armando.travel_agency_back.service.ActiveSessionService;
 import in.armando.travel_agency_back.service.UserService;
 import in.armando.travel_agency_back.utils.JwpUtil;
 import lombok.RequiredArgsConstructor;
-
 @RestController
 @RequiredArgsConstructor
 public class AuthControlller {
@@ -35,37 +34,37 @@ public class AuthControlller {
     private final ActiveSessionService activeSessionService;
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody AuthRequest request) {
+    public Map<String, Object> login(@RequestBody AuthRequest request) {
         try {
             authenticate(request.getEmail(), request.getPassword());
 
             final UserEntity user = userService.getUserByEmail(request.getEmail());
-            if (!Boolean.TRUE.equals(user.getVerified())) {
-    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not verified");
-}
 
+            // Validación de usuario verificado
+            if (!Boolean.TRUE.equals(user.getVerified())) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not verified");
+            }
 
             final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
 
             String existingToken = activeSessionService.getToken(request.getEmail());
 
+            String token;
             if (existingToken != null && !jwtUtil.isTokenExpired(existingToken)) {
-                return new AuthResponse(
-                        request.getEmail(),
-                        userService.getUserRole(request.getEmail()),
-                        existingToken,
-                        user.getVerified() != null ? user.getVerified() : false);
-
+                token = existingToken;
+            } else {
+                token = jwtUtil.generateToken(userDetails);
+                activeSessionService.createSession(request.getEmail(), token);
             }
 
-            final String token = jwtUtil.generateToken(userDetails);
-            activeSessionService.createSession(request.getEmail(), token);
+            // Construimos el Map con los datos a devolver
+            Map<String, Object> response = new HashMap<>();
+            response.put("email", request.getEmail());
+            response.put("role", userService.getUserRole(request.getEmail()));
+            response.put("token", token);
+            response.put("verified", user.getVerified());
 
-            return new AuthResponse(
-                    request.getEmail(),
-                    userService.getUserRole(request.getEmail()),
-                    token,
-                    user.getVerified() != null ? user.getVerified() : false);
+            return response;
 
         } catch (ResponseStatusException e) {
             throw e;
