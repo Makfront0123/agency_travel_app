@@ -11,6 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +23,7 @@ import in.armando.travel_agency_back.service.ActiveSessionService;
 import in.armando.travel_agency_back.service.UserService;
 import in.armando.travel_agency_back.utils.JwpUtil;
 import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequiredArgsConstructor
 public class AuthControlller {
@@ -88,4 +90,15 @@ public class AuthControlller {
     public String encodePassword(@RequestBody Map<String, String> request) {
         return passwordEncoder.encode(request.get("password"));
     }
+
+    @GetMapping("/test-verified")
+    public Map<String, Object> testVerified() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("email", "test@example.com");
+        map.put("role", "ROLE_USER");
+        map.put("token", "fake-token");
+        map.put("verified", true);
+        return map;
+    }
+
 }
