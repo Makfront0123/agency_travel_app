@@ -90,11 +90,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       await _storageService.saveToken(user.token);
 
-      if (user.accountVerified) {
-        emit(Authenticated(user: user));
-      } else {
-        emit(AuthVerificationSuccess());
-      }
+      emit(Authenticated(user: user));
     } catch (e) {
       emit(AuthError("Failed to login: ${e.toString()}"));
     }
