@@ -13,5 +13,5 @@ public class AuthResponse {
     private final String token;
 
     @JsonProperty("verified")
-    private final boolean verified;
+    private final Boolean verified;
 }
