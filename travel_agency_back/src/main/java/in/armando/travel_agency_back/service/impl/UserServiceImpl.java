@@ -68,7 +68,8 @@ public class UserServiceImpl implements UserService {
                 .lastName(request.getLastName())
                 .email(request.getEmail())
                 .role(request.getRole())
-                .verified(request.isVerified())
+                .verified(request.getVerified())
+
                 .otp(request.getOtp())
                 .createdAt(request.getCreatedAt())
                 .updatedAt(request.getUpdatedAt())
