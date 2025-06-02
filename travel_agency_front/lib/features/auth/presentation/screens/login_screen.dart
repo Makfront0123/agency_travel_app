@@ -32,8 +32,10 @@ class LoginScreen extends StatelessWidget {
         if (state is Authenticated) {
           Navigator.pushReplacementNamed(context, '/application');
         } else if (state is AuthVerificationSuccess) {
+          print('AuthVerificationSuccess $state');
           Navigator.pushReplacementNamed(context, '/verify');
         } else if (state is AuthError) {
+          print(state.message);
           context.read<AuthBloc>().add(const LogoutEvent());
         } else if (state is AuthResetPasswordSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
