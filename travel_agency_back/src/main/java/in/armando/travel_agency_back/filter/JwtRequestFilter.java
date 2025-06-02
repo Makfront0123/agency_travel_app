@@ -1,6 +1,8 @@
 package in.armando.travel_agency_back.filter;
 
 import java.io.IOException;
+import java.util.List;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,13 +32,26 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
         this.tokenBlacklistService = tokenBlacklistService;
-        this.activeSessionService =  activeSessionService;
+        this.activeSessionService = activeSessionService;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
+
+        String path = request.getRequestURI();
+
+        // Ignorar rutas públicas
+        List<String> publicPaths = List.of(
+                "/login", "/encode", "/register", "/verify",
+                "/resend-otp", "/forgot", "/verifyForgot",
+                "/reset-password", "/test-auth");
+
+        if (publicPaths.contains(path)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         final String authHeader = request.getHeader("Authorization");
 
@@ -73,7 +88,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token inválido o expirado");
                 return;
             }
-
         }
 
         filterChain.doFilter(request, response);
