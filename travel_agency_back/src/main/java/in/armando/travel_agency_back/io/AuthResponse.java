@@ -8,12 +8,17 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.ALWAYS) 
+@JsonInclude(JsonInclude.Include.ALWAYS)
 public class AuthResponse {
+
     private final String email;
     private final String role;
     private final String token;
 
-    @JsonProperty("verified")
-    private final Boolean verified;
+    private final Boolean verified;  
+
+    @JsonProperty("verified")  
+    public Boolean getVerified() {
+        return verified;
+    }
 }

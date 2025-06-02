@@ -60,7 +60,7 @@ public class SecurityConfig {
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/login", "/encode", "/register", "/verify",
                                                                 "/resend-otp", "/forgot",
-                                                                "/verifyForgot", "/reset-password", "/test-verified")
+                                                                "/verifyForgot", "/reset-password")
                                                 .permitAll()
                                                 .requestMatchers("/airport/**", "/flight/**", "/reservation/**",
                                                                 "/details/**", "/payment/**",
