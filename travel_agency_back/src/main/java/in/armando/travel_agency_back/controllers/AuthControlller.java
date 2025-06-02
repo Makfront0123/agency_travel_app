@@ -22,6 +22,7 @@ import in.armando.travel_agency_back.io.AuthRequest;
 import in.armando.travel_agency_back.service.ActiveSessionService;
 import in.armando.travel_agency_back.service.UserService;
 import in.armando.travel_agency_back.utils.JwpUtil;
+import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -92,6 +93,7 @@ public class AuthControlller {
     }
 
     @GetMapping("/test-verified")
+    @PermitAll
     public Map<String, Object> testVerified() {
         Map<String, Object> map = new HashMap<>();
         map.put("email", "test@example.com");
