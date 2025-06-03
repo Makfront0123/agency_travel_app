@@ -15,8 +15,7 @@ public class AuthResponse {
     private final String role;
     private final String token;
 
-     
-
-   @JsonProperty("verified")  // Esto sí se serializa bien
+    @JsonProperty("verified")
     private final Boolean verified;
 }
+

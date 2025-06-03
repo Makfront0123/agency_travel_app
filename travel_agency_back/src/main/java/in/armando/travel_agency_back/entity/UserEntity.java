@@ -5,7 +5,9 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import in.armando.travel_agency_back.utils.BitBooleanConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -36,8 +38,10 @@ public class UserEntity {
     private String password;
     private String role;
 
+
     @Builder.Default
     @Column(nullable = false)
+    @Convert(converter = BitBooleanConverter.class)
     private Boolean verified = false;
 
     @CreationTimestamp

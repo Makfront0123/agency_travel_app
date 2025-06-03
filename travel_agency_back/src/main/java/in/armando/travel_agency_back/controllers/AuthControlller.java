@@ -10,7 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,22 +49,29 @@ public class AuthControlller {
             String existingToken = activeSessionService.getToken(request.getEmail());
 
             if (existingToken != null && !jwtUtil.isTokenExpired(existingToken)) {
-                return new AuthResponse(
+                AuthResponse response = new AuthResponse(
                         request.getEmail(),
                         userService.getUserRole(request.getEmail()),
                         existingToken,
                         user.getVerified() != null ? user.getVerified() : false);
+
+                return response;
 
             }
 
             final String token = jwtUtil.generateToken(userDetails);
             activeSessionService.createSession(request.getEmail(), token);
 
-            return new AuthResponse(
+            AuthResponse response = new AuthResponse(
                     request.getEmail(),
                     userService.getUserRole(request.getEmail()),
                     token,
                     user.getVerified() != null ? user.getVerified() : false);
+
+            System.out.println(
+                    "AUTH RESPONSE: " + new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(response));
+
+            return response;
 
         } catch (ResponseStatusException e) {
             throw e;
@@ -90,8 +96,4 @@ public class AuthControlller {
         return passwordEncoder.encode(request.get("password"));
     }
 
-    @GetMapping("/test-auth")
-    public AuthResponse testAuthResponse() {
-        return new AuthResponse("test@email.com", "ROLE_USER", "dummy-token", false);
-    }
 }
