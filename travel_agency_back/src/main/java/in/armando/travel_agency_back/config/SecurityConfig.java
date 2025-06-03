@@ -59,9 +59,11 @@ public class SecurityConfig {
                                 .csrf(AbstractHttpConfigurer::disable)
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/login", "/encode", "/register", "/verify",
-                                                                "/resend-otp", "/forgot",
-                                                                "/verifyForgot", "/reset-password","/test-auth")
+                                                                "/resend-otp", "/forgot", "/verifyForgot",
+                                                                "/reset-password",
+                                                                "/test-auth", "/debug-user") // <--- agrega este
                                                 .permitAll()
+
                                                 .requestMatchers("/airport/**", "/flight/**", "/reservation/**",
                                                                 "/details/**", "/payment/**",
                                                                 "/users/**")
