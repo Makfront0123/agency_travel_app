@@ -61,19 +61,18 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    private UserResponse convertToResponse(UserEntity request) {
-        return UserResponse.builder()
-                .userId(request.getUserId())
-                .name(request.getName())
-                .lastName(request.getLastName())
-                .email(request.getEmail())
-                .role(request.getRole())
-                .verified(request.isVerified())
-                .otp(request.getOtp())
-                .createdAt(request.getCreatedAt())
-                .updatedAt(request.getUpdatedAt())
-                .build();
-    }
+    private UserResponse convertToResponse(UserEntity user) {
+    return UserResponse.builder()
+            .userId(user.getUserId())
+            .name(user.getName())
+            .lastName(user.getLastName())
+            .email(user.getEmail())
+            .role(user.getRole())
+            .verified(user.isVerified())
+            .createdAt(user.getCreatedAt())
+            .updatedAt(user.getUpdatedAt())
+            .build();
+}
 
     @Override
     public String getUserRole(String email) {
