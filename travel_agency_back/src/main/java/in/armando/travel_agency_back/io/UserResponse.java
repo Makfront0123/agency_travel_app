@@ -7,10 +7,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Builder;
 import lombok.Data;
-
 @Builder
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL) // No serializa campos null
+@JsonInclude(JsonInclude.Include.ALWAYS) 
 public class UserResponse {
     private String userId;
     private String name;
@@ -18,6 +17,8 @@ public class UserResponse {
     private String email;
     private String role;
     private boolean verified;
+    private String otp;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
+
