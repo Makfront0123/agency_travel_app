@@ -159,8 +159,7 @@ public class UserController {
                     .lastName(user.getLastName())
                     .email(user.getEmail())
                     .role(user.getRole())
-                    .verified(user.getVerified() != null ? user.getVerified() : false)
-
+                    .verified(user.isVerified())
                     .createdAt(user.getCreatedAt())
                     .updatedAt(user.getUpdatedAt())
                     .build();

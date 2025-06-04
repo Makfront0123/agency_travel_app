@@ -5,9 +5,7 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import in.armando.travel_agency_back.utils.BitBooleanConverter;
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,33 +26,25 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(unique = true)
     private String userId;
-
     private String name;
     private String lastName;
     private String email;
     private String password;
     private String role;
-
-
-    @Builder.Default
-    @Column(nullable = false)
-    @Convert(converter = BitBooleanConverter.class)
-    private Boolean verified = false;
-
+    private boolean verified;
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
-
     @UpdateTimestamp
     @Column(updatable = false)
     private LocalDateTime updatedAt;
 
     @Column(nullable = true)
     private LocalDateTime otpExpiration;
-
+    
     @Column(nullable = true)
-    private String otp;
+    private String otp; 
+ 
 }

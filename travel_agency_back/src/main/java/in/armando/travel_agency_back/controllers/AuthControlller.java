@@ -10,10 +10,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -42,38 +40,31 @@ public class AuthControlller {
             authenticate(request.getEmail(), request.getPassword());
 
             final UserEntity user = userService.getUserByEmail(request.getEmail());
-            if (!Boolean.TRUE.equals(user.getVerified())) {
+            if (!user.isVerified()) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not verified");
             }
 
             final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
 
+       
             String existingToken = activeSessionService.getToken(request.getEmail());
 
             if (existingToken != null && !jwtUtil.isTokenExpired(existingToken)) {
-                AuthResponse response = new AuthResponse(
+                return new AuthResponse(
                         request.getEmail(),
                         userService.getUserRole(request.getEmail()),
                         existingToken,
-                        user.getVerified() != null ? user.getVerified() : false);
-
-                return response;
-
+                        user.isVerified());
             }
-
+ 
             final String token = jwtUtil.generateToken(userDetails);
             activeSessionService.createSession(request.getEmail(), token);
 
-            AuthResponse response = new AuthResponse(
+            return new AuthResponse(
                     request.getEmail(),
                     userService.getUserRole(request.getEmail()),
                     token,
-                    user.getVerified() != null ? user.getVerified() : false);
-
-            System.out.println(
-                    "AUTH RESPONSE: " + new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(response));
-
-            return response;
+                    user.isVerified());
 
         } catch (ResponseStatusException e) {
             throw e;
@@ -97,12 +88,4 @@ public class AuthControlller {
     public String encodePassword(@RequestBody Map<String, String> request) {
         return passwordEncoder.encode(request.get("password"));
     }
-
-    @GetMapping("/debug-user")
-    public UserEntity getUserDebug(@RequestParam String email) {
-        UserEntity user = userService.getUserByEmail(email);
-        System.out.println("DEBUG USER: " + user);
-        return user;
-    }
-
 }
