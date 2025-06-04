@@ -62,17 +62,18 @@ public class UserServiceImpl implements UserService {
     }
 
     private UserResponse convertToResponse(UserEntity user) {
-    return UserResponse.builder()
-            .userId(user.getUserId())
-            .name(user.getName())
-            .lastName(user.getLastName())
-            .email(user.getEmail())
-            .role(user.getRole())
-            .verified(user.isVerified())
-            .createdAt(user.getCreatedAt())
-            .updatedAt(user.getUpdatedAt())
-            .build();
-}
+        return UserResponse.builder()
+                .userId(user.getUserId())
+                .name(user.getName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .verified(user.isVerified())
+                .otp(user.getOtp()) // ✅ AÑADIR
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
+                .build();
+    }
 
     @Override
     public String getUserRole(String email) {
@@ -132,9 +133,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String logout(String token) {
-        String email = jwtUtil.extractUsername(token); 
+        String email = jwtUtil.extractUsername(token);
         tokenBlacklistService.blacklistToken(token);
-        activeSessionService.removeSession(email); 
+        activeSessionService.removeSession(email);
         return "Logout successful";
     }
 
@@ -202,7 +203,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String logoutByEmail(String email) {
-        String token = jwtUtil.extractToken(email);  
+        String token = jwtUtil.extractToken(email);
         if (token == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No active session for this user.");
         }
