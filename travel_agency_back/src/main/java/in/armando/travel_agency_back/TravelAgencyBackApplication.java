@@ -10,7 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(basePackages = {"in"})
 public class TravelAgencyBackApplication {
     public static void main(String[] args) {
-        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+        TimeZone.setDefault(TimeZone.getTimeZone("America/Bogota"));
         SpringApplication.run(TravelAgencyBackApplication.class, args);
     }
 }
