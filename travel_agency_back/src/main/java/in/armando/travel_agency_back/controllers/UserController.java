@@ -1,5 +1,4 @@
-/*
- * package in.armando.travel_agency_back.controllers;
+package in.armando.travel_agency_back.controllers;
 
 import java.util.List;
 import java.util.Map;
@@ -175,5 +174,3 @@ public class UserController {
     }
 
 }
- * 
- */
