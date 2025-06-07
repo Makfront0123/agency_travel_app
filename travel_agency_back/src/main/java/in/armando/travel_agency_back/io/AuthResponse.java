@@ -1,13 +1,9 @@
 package in.armando.travel_agency_back.io;
 
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-
-@JsonInclude(JsonInclude.Include.ALWAYS) 
 @Getter
 @AllArgsConstructor
 public class AuthResponse {
