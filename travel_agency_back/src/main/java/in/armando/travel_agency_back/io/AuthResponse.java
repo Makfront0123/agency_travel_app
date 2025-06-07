@@ -12,6 +12,6 @@ public class AuthResponse {
     private final String email;
     private final String role;
     private final String token;
-    private final String verified;  // <-- aquí debe ser String, sin errores tipográficos
+    private final boolean verified;   
 }
 

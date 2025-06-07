@@ -40,12 +40,9 @@ public class AuthControlller {
             authenticate(request.getEmail(), request.getPassword());
 
             final UserEntity user = userService.getUserByEmail(request.getEmail());
-            /*
-             * if (!user.isVerified()) {
+            if (!user.isVerified()) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not verified");
             }
-             * 
-             */
 
             final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
 
@@ -53,13 +50,21 @@ public class AuthControlller {
             String existingToken = activeSessionService.getToken(request.getEmail());
 
             if (existingToken != null && !jwtUtil.isTokenExpired(existingToken)) {
-                return new AuthResponse("b@gmail.com", "ROLE_USER", "1234567890", "true");
+                return new AuthResponse(
+                        request.getEmail(),
+                        userService.getUserRole(request.getEmail()),
+                        existingToken,
+                        user.isVerified());
             }
  
             final String token = jwtUtil.generateToken(userDetails);
             activeSessionService.createSession(request.getEmail(), token);
 
-            return new AuthResponse("b@gmail.com", "ROLE_USER", "1234567890", "true");
+            return new AuthResponse(
+                    request.getEmail(),
+                    userService.getUserRole(request.getEmail()),
+                    token,
+                    user.isVerified());
 
         } catch (ResponseStatusException e) {
             throw e;

@@ -33,7 +33,9 @@ public class UserEntity {
     private String email;
     private String password;
     private String role;
-    private String verified;
+    @Column(nullable = false)
+    private boolean verified;
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
