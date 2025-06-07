@@ -133,10 +133,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String logout(String token) {
-        String email = jwtUtil.extractUsername(token);
-        tokenBlacklistService.blacklistToken(token);
-        activeSessionService.removeSession(email);
-        return "Logout successful";
+        System.out.println("Token recibido para logout: " + token);
+
+        try {
+            String email = jwtUtil.extractUsername(token);
+            tokenBlacklistService.blacklistToken(token);
+            activeSessionService.removeSession(email);
+            return "Logout successful";
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token inválido o expirado", e);
+        }
+
     }
 
     @Override
