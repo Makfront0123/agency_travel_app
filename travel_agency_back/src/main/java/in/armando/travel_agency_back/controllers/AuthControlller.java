@@ -54,7 +54,7 @@ public class AuthControlller {
                         request.getEmail(),
                         userService.getUserRole(request.getEmail()),
                         existingToken,
-                        user.isVerified());
+                        "true");
             }
  
             final String token = jwtUtil.generateToken(userDetails);
@@ -64,7 +64,7 @@ public class AuthControlller {
                     request.getEmail(),
                     userService.getUserRole(request.getEmail()),
                     token,
-                    user.isVerified());
+                    "true");
 
         } catch (ResponseStatusException e) {
             throw e;
