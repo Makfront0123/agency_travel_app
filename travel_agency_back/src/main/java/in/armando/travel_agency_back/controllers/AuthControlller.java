@@ -50,13 +50,13 @@ public class AuthControlller {
             String existingToken = activeSessionService.getToken(request.getEmail());
 
             if (existingToken != null && !jwtUtil.isTokenExpired(existingToken)) {
-                return new AuthResponse("a@a.com", "ROLE_USER", "token123", "true");
+                return new AuthResponse("b@gmail.com", "ROLE_USER", "1234567890", "true");
             }
  
             final String token = jwtUtil.generateToken(userDetails);
             activeSessionService.createSession(request.getEmail(), token);
 
-            return new AuthResponse("a@a.com", "ROLE_USER", "token123", "true");
+            return new AuthResponse("b@gmail.com", "ROLE_USER", "1234567890", "true");
 
         } catch (ResponseStatusException e) {
             throw e;
