@@ -40,9 +40,12 @@ public class AuthControlller {
             authenticate(request.getEmail(), request.getPassword());
 
             final UserEntity user = userService.getUserByEmail(request.getEmail());
-            if (!user.isVerified()) {
+            /*
+             * if (!user.isVerified()) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not verified");
             }
+             * 
+             */
 
             final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
 
