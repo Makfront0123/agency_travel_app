@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +18,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Component
 public class JwpUtil {
 
-    private final String SECRET_KEY = "thiismySecretKey";
+    @Value("${jwt.secret}")
+    private String secret;
     private ActiveSessionService activeSessionService;
 
     public String generateToken(UserDetails userDetails) {
@@ -27,15 +29,14 @@ public class JwpUtil {
 
     private String createToken(Map<String, Object> claims, String subject) {
         long now = System.currentTimeMillis();
-      long expirationTime = 1000 * 60 * 60; // 60 minutes
-
+        long expirationTime = 1000 * 60 * 60; // 60 minutes
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(now))
                 .setExpiration(new Date(now + expirationTime))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
 
@@ -59,13 +60,13 @@ public class JwpUtil {
             final Claims claims = extractAllClaims(token);
             return claimsResolver.apply(claims);
         } catch (ExpiredJwtException e) {
-            return claimsResolver.apply(e.getClaims());  
+            return claimsResolver.apply(e.getClaims());
         }
     }
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .setSigningKey(SECRET_KEY)
+                .setSigningKey(secret)
                 .parseClaimsJws(token)
                 .getBody();
     }
@@ -96,5 +97,4 @@ public class JwpUtil {
         return activeSessionService.getToken(email);
     }
 
-  
 }

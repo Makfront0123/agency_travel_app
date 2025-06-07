@@ -67,6 +67,7 @@ in\armando\travel_agency_back\service\UserService.class
 in\armando\travel_agency_back\service\ActiveSessionService.class
 in\armando\travel_agency_back\service\PaymentService.class
 in\armando\travel_agency_back\entity\AirportEntity$AirportEntityBuilder.class
+in\armando\travel_agency_back\controllers\UserController.class
 in\armando\travel_agency_back\io\OtpResponse.class
 in\armando\travel_agency_back\entity\FlightEntity.class
 in\armando\travel_agency_back\service\impl\PassengerServiceImpl.class
