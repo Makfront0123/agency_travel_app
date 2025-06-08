@@ -38,8 +38,6 @@ class AuthApiService {
         'password': password,
       });
 
-      print('response.data ${response.data}');
-
       final data = response.data;
       final token = data['token'];
 
