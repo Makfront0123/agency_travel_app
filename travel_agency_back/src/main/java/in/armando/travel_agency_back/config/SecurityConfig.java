@@ -39,7 +39,12 @@ public class SecurityConfig {
 
         private UrlBasedCorsConfigurationSource corsConfig() {
                 CorsConfiguration corsConfiguration = new CorsConfiguration();
-                corsConfiguration.setAllowedOriginPatterns(List.of("*"));
+                corsConfiguration.setAllowedOriginPatterns(List.of(
+                                "http://localhost:3000",
+                                "http://127.0.0.1:5500",
+                                "http://192.168.1.89:8080",
+                                "http://10.0.2.2:8080",
+                                "https://agency-travel-app.onrender.com"));
 
                 corsConfiguration.setAllowCredentials(true);
                 corsConfiguration.setAllowedMethods(
