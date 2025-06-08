@@ -16,6 +16,7 @@ Future<void> initApp() async {
     }
     Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? '';
   } else {
+    // Leer clave en web con dart-define
     Stripe.publishableKey = const String.fromEnvironment(
         'STRIPE_PUBLISHABLE_KEY',
         defaultValue: '');
