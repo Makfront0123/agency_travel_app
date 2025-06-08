@@ -44,7 +44,8 @@ public class SecurityConfig {
                                 "http://127.0.0.1:5500",
                                 "http://192.168.1.89:8080",
                                 "http://10.0.2.2:8080",
-                                "https://agency-travel-app.onrender.com"));
+                                "https://agency-travel-app-2tvz.vercel.app"));
+                                
 
                 corsConfiguration.setAllowCredentials(true);
                 corsConfiguration.setAllowedMethods(
