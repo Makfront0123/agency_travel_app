@@ -9,7 +9,6 @@ class AuthApiService {
 
   Future<UserModel> register(String name, String lastName, String email,
       String password, String confirmPassword) async {
-    print('BASEURL $baseUrl');
     try {
       final response = await _dio.post('$baseUrl/register', data: {
         'name': name,

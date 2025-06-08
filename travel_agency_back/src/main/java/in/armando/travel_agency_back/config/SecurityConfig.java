@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,7 +25,6 @@ import in.armando.travel_agency_back.filter.JwtRequestFilter;
 import in.armando.travel_agency_back.service.impl.UserDetailService;
 import lombok.RequiredArgsConstructor;
 
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -33,7 +33,8 @@ public class SecurityConfig {
     private final UserDetailService userService;
     private final JwtRequestFilter jwtRequestFilter;
 
-    // Define la configuración CORS global para MVC, que funciona además para endpoints REST
+    // Define la configuración CORS global para MVC, que funciona además para
+    // endpoints REST
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
@@ -75,26 +76,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(auth -> auth
-                    .requestMatchers(
-                            "/login", "/encode", "/register", "/verify",
-                            "/resend-otp",
-                            "/forgot", "/verifyForgot", "/reset-password",
-                            "/test-auth", "/debug-user")
-                    .permitAll()
-                    .requestMatchers("/airport/**", "/flight/**", "/reservation/**",
-                            "/details/**", "/payment/**", "/users/**")
-                    .hasAnyRole("USER", "ADMIN")
-                    .requestMatchers("/admin/**").hasRole("ADMIN")
-                    .anyRequest().authenticated())
-            .sessionManagement(session -> session
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            // Permitir que las peticiones OPTIONS pasen sin autenticación
-            .authorizeHttpRequests(auth -> auth
-                    .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll())
-            .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(
+                                "/login", "/encode", "/register", "/verify",
+                                "/resend-otp", "/forgot", "/verifyForgot", "/reset-password",
+                                "/test-auth", "/debug-user")
+                        .permitAll()
+                        .requestMatchers("/airport/**", "/flight/**", "/reservation/**",
+                                "/details/**", "/payment/**", "/users/**")
+                        .hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .anyRequest().authenticated())
+
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // Permitir que las peticiones OPTIONS pasen sin autenticación
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll())
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
