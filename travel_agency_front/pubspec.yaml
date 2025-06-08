@@ -32,4 +32,5 @@ flutter:
 
   assets:
     - assets/
-    - .env
+    # - .env  ← solo si no estás en Web
+
