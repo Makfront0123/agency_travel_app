@@ -2,34 +2,30 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:flutter_stripe/flutter_stripe.dart' as mobile_stripe;
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:stripe_js/stripe_js.dart' as web_stripe;
+
+web_stripe.Stripe? stripeWeb;
 
 Future<void> initApp() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  String stripeKey = '';
+  await dotenv.load(fileName: ".env");
+
+  String stripeKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? '';
 
   if (kIsWeb) {
-    stripeKey = const String.fromEnvironment('STRIPE_PUBLISHABLE_KEY');
+    stripeWeb = web_stripe.Stripe(stripeKey);
   } else {
-    try {
-      await dotenv.load(fileName: ".env");
-      stripeKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? '';
-    } catch (e) {
-      throw Exception('Error loading .env file: $e');
-    }
-  }
+    mobile_stripe.Stripe.publishableKey = stripeKey;
+    await mobile_stripe.Stripe.instance.applySettings();
 
-  Stripe.publishableKey = stripeKey;
-  await Stripe.instance.applySettings();
-
-  await initializeDateFormatting('es_ES', null);
-
-  if (!kIsWeb) {
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
   }
+
+  await initializeDateFormatting('es_ES', null);
 }
