@@ -11,7 +11,6 @@ Future<void> initApp() async {
   String stripeKey = '';
 
   if (kIsWeb) {
-    // En producción Web, se usa `--dart-define`
     stripeKey = const String.fromEnvironment('STRIPE_PUBLISHABLE_KEY');
   } else {
     try {
