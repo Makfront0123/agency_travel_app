@@ -7,16 +7,23 @@ import 'package:intl/date_symbol_data_local.dart';
 
 Future<void> initApp() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (!kIsWeb) {
+
+  String stripeKey = '';
+
+  if (kIsWeb) {
+    // En producción Web, se usa `--dart-define`
+    stripeKey = const String.fromEnvironment('STRIPE_PUBLISHABLE_KEY');
+  } else {
     try {
       await dotenv.load(fileName: ".env");
+      stripeKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? '';
     } catch (e) {
       throw Exception('Error loading .env file: $e');
     }
-
-    Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? '';
-    await Stripe.instance.applySettings();
   }
+
+  Stripe.publishableKey = stripeKey;
+  await Stripe.instance.applySettings();
 
   await initializeDateFormatting('es_ES', null);
 
