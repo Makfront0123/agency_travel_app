@@ -31,3 +31,5 @@ Future<void> initApp() async {
     DeviceOrientation.portraitDown,
   ]);
 }
+
+// ignore: avoid_print
