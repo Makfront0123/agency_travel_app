@@ -33,5 +33,3 @@ Future<void> initApp() async {
     ]);
   }
 }
-
-// ignore: avoid_print
