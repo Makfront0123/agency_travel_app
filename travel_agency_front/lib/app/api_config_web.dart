@@ -2,11 +2,7 @@ class ApiConfig {
   static const bool isProduction = true;
 
   static String get baseUrl {
-    if (isProduction) {
-      return 'https://agency-travel-app.onrender.com';
-    }
-
-    // URL para modo desarrollo en web
-    return 'http://localhost:8080';
+    // Siempre usa producción en web o puedes poner URL local si quieres.
+    return 'https://agency-travel-app.onrender.com';
   }
 }
