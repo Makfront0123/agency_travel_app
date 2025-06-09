@@ -1,3 +1,12 @@
+class ApiConfig {
+  static String get baseUrl {
+    print('Using mobile config');
+    return 'mobile base url';
+  }
+}
+
+
+/*
 import 'dart:io';
 
 class ApiConfig {
@@ -22,3 +31,5 @@ class ApiConfig {
     return !Platform.environment.containsKey("ANDROID_STORAGE");
   }
 }
+
+ */
