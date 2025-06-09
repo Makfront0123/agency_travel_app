@@ -26,9 +26,7 @@ jobs:
         env:
           STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
           STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-        run: flutter build web --release \
-          --dart-define=STRIPE_PUBLISHABLE_KEY=$STRIPE_PUBLISHABLE_KEY \
-          --dart-define=STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY
+        run: flutter build web --release --dart-define=STRIPE_PUBLISHABLE_KEY=$STRIPE_PUBLISHABLE_KEY --dart-define=STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY
         working-directory: travel_agency_front
 
       - name: Deploy to Vercel
