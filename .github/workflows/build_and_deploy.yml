@@ -26,16 +26,10 @@ jobs:
         env:
           STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
           STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-        run: flutter build web --release --dart-define=STRIPE_PUBLISHABLE_KEY=$STRIPE_PUBLISHABLE_KEY --dart-define=STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY
+        run: flutter build web --release \
+          --dart-define=STRIPE_PUBLISHABLE_KEY=$STRIPE_PUBLISHABLE_KEY \
+          --dart-define=STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY
         working-directory: travel_agency_front
-
-      - name: Debug secret presence (opcional)
-        run: |
-          echo "VERCEL_TOKEN set: ${VERCEL_TOKEN:+yes}"
-          echo "VERCEL_PROJECT_ID set: ${VERCEL_PROJECT_ID:+yes}"
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Deploy to Vercel
         env:
@@ -43,8 +37,5 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
           npm install -g vercel
-          vercel deploy travel_agency_front/build/web \
-            --prod \
-            --token "$VERCEL_TOKEN" \
-            --confirm \
-            --project "$VERCEL_PROJECT_ID"
+          cd travel_agency_front/build/web
+          vercel deploy . --prod --token "$VERCEL_TOKEN" --confirm --project "$VERCEL_PROJECT_ID"
