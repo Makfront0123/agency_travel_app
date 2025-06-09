@@ -26,10 +26,12 @@ Future<void> initApp() async {
 
   await initializeDateFormatting('es_ES', null);
 
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
+  if (!kIsWeb) {
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  }
 }
 
 // ignore: avoid_print
