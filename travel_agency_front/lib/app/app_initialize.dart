@@ -11,13 +11,19 @@ web_stripe.Stripe? stripeWeb;
 Future<void> initApp() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await dotenv.load(fileName: ".env");
+  if (!kIsWeb) {
+    await dotenv.load(fileName: ".env");
+  }
 
-  String stripeKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? '';
+  String stripeKey;
 
   if (kIsWeb) {
+    // Para web, usa dart-define, no dotenv
+    stripeKey = const String.fromEnvironment('STRIPE_PUBLISHABLE_KEY',
+        defaultValue: '');
     stripeWeb = web_stripe.Stripe(stripeKey);
   } else {
+    stripeKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? '';
     mobile_stripe.Stripe.publishableKey = stripeKey;
     await mobile_stripe.Stripe.instance.applySettings();
 
