@@ -2,8 +2,10 @@ package in.armando.travel_agency_back.config;
 
 import java.util.List;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -18,16 +20,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
- 
+import org.springframework.web.filter.CorsFilter; 
 
 import in.armando.travel_agency_back.filter.JwtRequestFilter;
 import in.armando.travel_agency_back.service.impl.UserDetailService;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.core.Ordered;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
- 
-import org.springframework.web.filter.CorsFilter;
 
  
 
@@ -95,7 +92,7 @@ public class SecurityConfig {
                 "http://127.0.0.1:5500",
                 "http://192.168.1.89:8080",
                 "http://10.0.2.2:8080",
-                "https://agency-travel-app-2tvz.vercel.app"
+                "https://web-2esjqaqxm-armandos-projects-bf6157fe.vercel.app"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
