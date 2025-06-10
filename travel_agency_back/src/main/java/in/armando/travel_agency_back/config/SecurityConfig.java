@@ -44,9 +44,7 @@ public class SecurityConfig {
                                 "http://127.0.0.1:5500",
                                 "http://192.168.1.89:8080",
                                 "http://10.0.2.2:8080",
-                                "https://agency-travel-app-2tvz.vercel.app",
-                                "https://web-4kev2ie1z-armandos-projects-bf6157fe.vercel.app",
-                                "https://web-2esjqaqxm-armandos-projects-bf6157fe.vercel.app" // <-- Agrega este
+                                "https://web-e6jaga4pw-armandos-projects-bf6157fe.vercel.app"
                 ));
 
                 config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
@@ -94,8 +92,8 @@ public class SecurityConfig {
                                 "http://127.0.0.1:5500",
                                 "http://192.168.1.89:8080",
                                 "http://10.0.2.2:8080",
-                                "https://web-4kev2ie1z-armandos-projects-bf6157fe.vercel.app",
-                                "https://web-2esjqaqxm-armandos-projects-bf6157fe.vercel.app"));
+                                "https://web-e6jaga4pw-armandos-projects-bf6157fe.vercel.app"
+                                ));
                 configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                 configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
 
