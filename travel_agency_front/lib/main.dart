@@ -6,11 +6,11 @@ import 'package:travel_agency_front/app/router.dart';
 import 'package:travel_agency_front/features/payment/data/datasources/stripe_api_service.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+final StripePaymentApiService stripeService = StripePaymentApiService();
 
 void main() async {
   await initApp();
 
-  final stripeService = StripePaymentApiService();
   await stripeService.initStripe(
     const String.fromEnvironment('STRIPE_PUBLISHABLE_KEY'),
   );
