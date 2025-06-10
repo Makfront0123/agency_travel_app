@@ -1,3 +1,4 @@
+// ignore: avoid_web_libraries_in_flutter
 import 'dart:js_util' as js_util;
 
 import 'package:dio/dio.dart';
@@ -8,15 +9,11 @@ import 'package:stripe_js/stripe_js.dart' as stripe_js;
 
 class StripePaymentApiService {
   Map<String, dynamic>? paymentIntent;
-
-  // Instancia de Stripe JS para Web
-  late stripe_js.Stripe? stripeWeb;
+  stripe_js.Stripe? _stripeWeb;
 
   Future<void> initStripe(String publishableKey) async {
     if (kIsWeb) {
-      stripeWeb = stripe_js.Stripe(publishableKey);
-    } else {
-      stripeWeb = null;
+      _stripeWeb = stripe_js.Stripe(publishableKey);
     }
   }
 
@@ -25,13 +22,12 @@ class StripePaymentApiService {
     required String currency,
   }) async {
     if (kIsWeb) {
-      if (stripeWeb == null) throw Exception('Stripe JS no inicializado');
+      if (_stripeWeb == null) throw Exception('Stripe JS no inicializado');
 
       final sessionId = await _createCheckoutSession(amount, currency);
 
-      // Forzamos el cast a dynamic para que js_util acepte la instancia
       await js_util.callMethod(
-        stripeWeb! as dynamic,
+        _stripeWeb! as dynamic,
         'redirectToCheckout',
         [
           js_util.jsify({
@@ -58,7 +54,9 @@ class StripePaymentApiService {
 
   Future<String> _createCheckoutSession(String amount, String currency) async {
     final Dio dio = Dio();
-    final secretKey = dotenv.env['STRIPE_SECRET_KEY'] ?? '';
+    final secretKey = kIsWeb
+        ? const String.fromEnvironment('STRIPE_SECRET_KEY')
+        : dotenv.env['STRIPE_SECRET_KEY'] ?? '';
 
     final response = await dio.post(
       'https://api.stripe.com/v1/checkout/sessions',
