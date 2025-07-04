@@ -16,5 +16,5 @@ public class PassengerResponse {
     private String email;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private ReservationEntity reservation; // <--- AGREGAR ESTO
+    private ReservationEntity reservation;
 }
