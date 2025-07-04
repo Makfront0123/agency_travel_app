@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 
 @Builder
 @Data
-// Ya existe
+
 public class AirportResponse {
     private String airportId;
     private String name;
